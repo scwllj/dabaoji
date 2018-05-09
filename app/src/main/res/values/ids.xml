@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="home" type="id"></item>
+    <item name="back" type="id"></item>
+    <item name="refresh" type="id"></item>
+    <item name="title" type="id"></item>
+</resources>

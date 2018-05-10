@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Base64;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.DownloadListener;
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
             public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
-                return true;
+                return myWebview.getScrollY()>0;
             }
         });
         myWebview.loadUrl(getResources().getString(R.string.start_url));
@@ -128,12 +129,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     private void initWebview(){
         myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         myWebview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         myWebview.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
         myWebview.getSettings().setSupportMultipleWindows(false);
         myWebview.getSettings().setJavaScriptEnabled(true);
+        myWebview.setOverScrollMode(View.OVER_SCROLL_NEVER);
         myWebview.getSettings().setSupportZoom(true);
         if(Build.VERSION.SDK_INT>=16){
             myWebview.getSettings().setAllowFileAccessFromFileURLs(true);
@@ -157,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= 17) {
             myWebview.getSettings().setMediaPlaybackRequiresUserGesture(false);
         }
+
 
 
         myWebview.setOnLongClickListener(new View.OnLongClickListener() {

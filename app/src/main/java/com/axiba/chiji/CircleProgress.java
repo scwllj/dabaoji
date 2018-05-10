@@ -54,7 +54,7 @@ public class CircleProgress extends View {
 
         // 设置画笔相关属性
         mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.argb(0x99,0x99, 0x99, 0x99));
+        mPaint.setColor(Color.argb(0xFF,0x66, 0x66, 0x66));
         canvas.drawColor(Color.TRANSPARENT);
         mPaint.setStrokeWidth(mCircleLineStrokeWidth);
         mPaint.setStyle(Paint.Style.STROKE);
@@ -66,7 +66,7 @@ public class CircleProgress extends View {
 
         // 绘制圆圈，进度条背景
         canvas.drawArc(mRectF, -90, 360, false, mPaint);
-        mPaint.setColor(Color.argb(0x77,0xFF, 0xFF, 0xFF));
+        mPaint.setColor(Color.argb(0xFF,0x3c, 0xb3, 0x71));
         canvas.drawArc(mRectF, -90, ((float) mProgress / mMaxProgress) * 360, false, mPaint);
 
         // 绘制进度文案显示

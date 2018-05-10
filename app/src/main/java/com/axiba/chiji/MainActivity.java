@@ -2,9 +2,9 @@ package com.axiba.chiji;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -17,6 +17,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Base64;
 import android.view.KeyEvent;
@@ -43,7 +45,7 @@ import static android.webkit.WebSettings.LOAD_NO_CACHE;
 import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
 import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private AppCompatTextView refresh,home,back,errorNotice,forward;
     private DrawerLayout drawerLayout;
@@ -92,12 +94,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 return true;
             }
         });
-
+        myWebview.loadUrl(getResources().getString(R.string.start_url));
         initByConfig();
         initWebview();
-//        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
-//            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, 1);
-//        }
+        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, 1);
+        }
     }
 
     private void initByConfig() {
@@ -127,38 +129,36 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     private void initWebview(){
-//        myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-//        myWebview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-////		myWebview.getSettings().setBuiltInZoomControls(true);
-//        myWebview.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
-//        myWebview.getSettings().setSupportMultipleWindows(false);
+        myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        myWebview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        myWebview.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+        myWebview.getSettings().setSupportMultipleWindows(false);
         myWebview.getSettings().setJavaScriptEnabled(true);
-//        myWebview.getSettings().setSupportZoom(true);
-//        if(Build.VERSION.SDK_INT>=16){
-//            myWebview.getSettings().setAllowFileAccessFromFileURLs(true);
-//            myWebview.getSettings().setAllowUniversalAccessFromFileURLs(true);
-//        }
-//        myWebview.getSettings().setAllowFileAccess(true);
-//        myWebview.getSettings().setAllowContentAccess(true);
-//        myWebview.getSettings().setBuiltInZoomControls(true);
-//        myWebview.getSettings().setDisplayZoomControls(false);
-//        myWebview.getSettings().setLoadsImagesAutomatically(true);
-//        myWebview.getSettings().setBlockNetworkImage(false);
-//        myWebview.getSettings().setUseWideViewPort(true);
-//        myWebview.getSettings().setLoadWithOverviewMode(true);
-//        myWebview.getSettings().setAppCacheEnabled(true);
-//        myWebview.getSettings().setCacheMode(getResources().getBoolean(R.bool.need_cache)? LOAD_DEFAULT:LOAD_NO_CACHE);
+        myWebview.getSettings().setSupportZoom(true);
+        if(Build.VERSION.SDK_INT>=16){
+            myWebview.getSettings().setAllowFileAccessFromFileURLs(true);
+            myWebview.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        }
+        myWebview.getSettings().setAllowFileAccess(true);
+        myWebview.getSettings().setAllowContentAccess(true);
+        myWebview.getSettings().setBuiltInZoomControls(true);
+        myWebview.getSettings().setDisplayZoomControls(false);
+        myWebview.getSettings().setLoadsImagesAutomatically(true);
+        myWebview.getSettings().setBlockNetworkImage(false);
+        myWebview.getSettings().setUseWideViewPort(true);
+        myWebview.getSettings().setLoadWithOverviewMode(true);
+        myWebview.getSettings().setAppCacheEnabled(true);
+        myWebview.getSettings().setCacheMode(getResources().getBoolean(R.bool.need_cache)? LOAD_DEFAULT:LOAD_NO_CACHE);
         myWebview.getSettings().setDomStorageEnabled(true);
-//        myWebview.getSettings().setAppCacheEnabled(true);
-//        addJavascriptInterface(new JsInterface(), "jsinterface");
-//        if (Build.VERSION.SDK_INT >= 21) {
-//            myWebview.getSettings().setMixedContentMode(0);
-//        }
-//        if (Build.VERSION.SDK_INT >= 17) {
-//            myWebview.getSettings().setMediaPlaybackRequiresUserGesture(false);
-//        }
+        myWebview.getSettings().setAppCacheEnabled(true);
+        if (Build.VERSION.SDK_INT >= 21) {
+            myWebview.getSettings().setMixedContentMode(0);
+        }
+        if (Build.VERSION.SDK_INT >= 17) {
+            myWebview.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        }
 
-        myWebview.loadUrl(getResources().getString(R.string.start_url));
+
         myWebview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -168,18 +168,25 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0)
-                            {
-                                ActivityCompat.requestPermissions(MainActivity.this, MainActivity.PERMISSIONS_STORAGE, 1);
-                                return;
-                            }
-                            if(result.getExtra().startsWith("http")){
-                                FileUtils.savePicture(MainActivity.this,""+System.currentTimeMillis(),result.getExtra());
-                            }else{
-                                byte[] mBitmap = Base64.decode(result.getExtra(), Base64.DEFAULT);
-                                FileUtils.savaFileToSD(MainActivity.this,""+System.currentTimeMillis(),mBitmap);
+                            new AlertDialog.Builder(MainActivity.this).setMessage("保存图片到相册?")
+                                    .setNegativeButton("暂不",null)
+                                    .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0)
+                                            {
+                                                ActivityCompat.requestPermissions(MainActivity.this, MainActivity.PERMISSIONS_STORAGE, 1);
+                                                return;
+                                            }
+                                            if(result.getExtra().startsWith("http")){
+                                                FileUtils.savePicture(MainActivity.this,""+System.currentTimeMillis(),result.getExtra());
+                                            }else{
+                                                byte[] mBitmap = Base64.decode(result.getExtra(), Base64.DEFAULT);
+                                                FileUtils.savaFileToSD(MainActivity.this,""+System.currentTimeMillis(),mBitmap);
 //                            Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
-                            }
+                                            }
+                                        }
+                                    }).show();
                         }
                     });
                     return true;
@@ -195,28 +202,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 MainActivity.this.startActivity(intent);
             }
         });
-//        myWebview.setLongClickCallBack(new MyWebview.LongClickCallBack() {
-//            @Override
-//            public void onSaveImage(final String content) {
-//                MainActivity.this.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0)
-//                        {
-//                            ActivityCompat.requestPermissions(MainActivity.this, MainActivity.PERMISSIONS_STORAGE, 1);
-//                            return;
-//                        }
-//                        if(content.startsWith("http")){
-//                            FileUtils.savePicture(MainActivity.this,""+System.currentTimeMillis(),content);
-//                        }else{
-//                            byte[] mBitmap = Base64.decode(content, Base64.DEFAULT);
-//                            FileUtils.savaFileToSD(MainActivity.this,""+System.currentTimeMillis(),mBitmap);
-////                            Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
-//                        }
-//                    }
-//                });
-//            }
-//        });
         myWebview.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

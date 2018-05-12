@@ -210,6 +210,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if(getResources().getBoolean(R.bool.outer_web)){
+                    String yuming = getResources().getString(R.string.home_url).split("/")[2];
+                    if(url.contains(yuming)){
+                        return super.shouldOverrideUrlLoading(view,url);
+                    }
                     /*直接跳系统浏览器 */
                     openSystemBrower(url);
                     return true;

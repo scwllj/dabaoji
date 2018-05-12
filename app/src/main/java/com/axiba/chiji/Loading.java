@@ -3,19 +3,27 @@ package com.axiba.chiji;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
+import java.io.IOException;
+
 public class Loading extends AppCompatActivity {
 
     private Bitmap bitmap;
-    CircleProgress circleProgress;
+    private CircleProgress circleProgress;
+    private ViewPager guidePage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +72,14 @@ public class Loading extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                startActivity(new Intent(Loading.this,MainActivity.class));
-                finish();
+                SharedPreferences sp = getSharedPreferences("config",MODE_PRIVATE);
+                boolean first = sp.getBoolean("first_install",true);
+                if(getResources().getBoolean(R.bool.need_guide) && first){
+                    loadGuide();
+                }else {
+                    startActivity(new Intent(Loading.this, MainActivity.class));
+                    finish();
+                }
             }
 
             @Override
@@ -80,7 +94,45 @@ public class Loading extends AppCompatActivity {
         });
         animator.start();
 
+
+        guidePage = findViewById(R.id.guide_page);
+
+
     }
+
+    private void loadGuide(){
+        guidePage.setVisibility(View.VISIBLE);
+        try {
+            final String[] fileList = getAssets().list("guide");
+
+            guidePage.setAdapter(new PagerAdapter() {
+                @Override
+                public int getCount() {
+                    return fileList.length;
+                }
+
+                @Override
+                public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+                    return view==object;
+                }
+
+                @NonNull
+                @Override
+                public Object instantiateItem(@NonNull ViewGroup container, int position) {
+                    return super.instantiateItem(container, position);
+                }
+
+                @Override
+                public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+                    super.destroyItem(container, position, object);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     @Override
     protected void onDestroy() {

@@ -5,6 +5,7 @@ android {
     defaultConfig {
 //        applicationId 'com.axiba.chijiaa'//东方竞彩
         applicationId 'com.axiba.yule'//38989娱乐
+//        applicationId 'com.sdf.caibao'
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1

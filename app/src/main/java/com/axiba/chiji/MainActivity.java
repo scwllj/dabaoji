@@ -21,11 +21,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.DownloadListener;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
@@ -154,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myWebview.getSettings().setCacheMode(getResources().getBoolean(R.bool.need_cache)? LOAD_DEFAULT:LOAD_NO_CACHE);
         myWebview.getSettings().setDomStorageEnabled(true);
         myWebview.getSettings().setAppCacheEnabled(true);
+        myWebview.getSettings().setUserAgentString(myWebview.getSettings().getUserAgentString()+" androidapp");
         if (Build.VERSION.SDK_INT >= 21) {
             myWebview.getSettings().setMixedContentMode(0);
         }
@@ -161,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             myWebview.getSettings().setMediaPlaybackRequiresUserGesture(false);
         }
 
+//        myWebview.addJavascriptInterface(new AndroidJs(),"AndroidJs");//彩宝
+        myWebview.addJavascriptInterface(new AndroidJs(),"App9vCom");
 
 
         myWebview.setOnLongClickListener(new View.OnLongClickListener() {
@@ -206,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 MainActivity.this.startActivity(intent);
             }
         });
+        final String outer = "https://wpa.qq.com/msgrd";
         myWebview.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -219,9 +225,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                     /*---------*/
                 }
+                if(url.contains(outer)){
+                    openSystemBrower(url);
+                    return true;
+                }
+                Log.d("MainActivity", "---shouldOverrideUrlLoading: "+url);
                 if(url.endsWith(".mp4")){
                     return true;
                 }
+
                 try {
                     if (url.toLowerCase().startsWith("intent://")) {
                         Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
@@ -304,7 +316,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
 
                 result.confirm();
-                return super.onJsAlert(view, url, message, result);
+                return true;
+//                return super.onJsAlert(view, url, message, result);
             }
 
             @TargetApi(21)
@@ -430,6 +443,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public class AndroidJs {
+        @JavascriptInterface
+        public void share(){
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Share.shareWebLinkWithIcon(MainActivity.this,myWebview.getTitle()+"\n"+myWebview.getUrl());
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void OpenWithSafari(final String url){
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    openSystemBrower(url);
+                }
+            });
+        }
+
     }
 
 }

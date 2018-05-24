@@ -45,6 +45,7 @@ import android.widget.Toast;
 
 import static android.webkit.WebSettings.LOAD_DEFAULT;
 import static android.webkit.WebSettings.LOAD_NO_CACHE;
+import static android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
 import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
 import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 
@@ -158,14 +159,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myWebview.getSettings().setAppCacheEnabled(true);
         myWebview.getSettings().setUserAgentString(myWebview.getSettings().getUserAgentString()+" androidapp");
         if (Build.VERSION.SDK_INT >= 21) {
-            myWebview.getSettings().setMixedContentMode(0);
+            myWebview.getSettings().setMixedContentMode(MIXED_CONTENT_ALWAYS_ALLOW);
         }
         if (Build.VERSION.SDK_INT >= 17) {
             myWebview.getSettings().setMediaPlaybackRequiresUserGesture(false);
         }
 
-//        myWebview.addJavascriptInterface(new AndroidJs(),"AndroidJs");//彩宝
-        myWebview.addJavascriptInterface(new AndroidJs(),"App9vCom");
+        myWebview.addJavascriptInterface(new AndroidJs(),"AndroidJs");//彩宝
+//        myWebview.addJavascriptInterface(new AndroidJs(),"App9vCom");
 
 
         myWebview.setOnLongClickListener(new View.OnLongClickListener() {
@@ -225,10 +226,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                     /*---------*/
                 }
-                if(url.contains(outer)){
-                    openSystemBrower(url);
-                    return true;
-                }
+//                if(url.contains(outer)){
+//                    openSystemBrower(url);
+//                    return true;
+//                }
                 Log.d("MainActivity", "---shouldOverrideUrlLoading: "+url);
                 if(url.endsWith(".mp4")){
                     return true;

@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.DownloadListener;
+import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
@@ -67,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int CODE_UPLOAD_FILE_SINGLE = 213;
     private final int CODE_UPLOAD_FILE_MULT = 11;
 
+    private View xCustomView;
+    private WebChromeClient.CustomViewCallback xCustomViewCallback;
+    private FrameLayout fullScreenVedio;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         errorNotice = findViewById(R.id.errorNotice);
         if(errorNotice!=null)errorNotice.setOnClickListener(this);
 
+        fullScreenVedio = findViewById(R.id.fullscreen);
         myWebview = findViewById(R.id.webview);
         drawerLayout = findViewById(R.id.drawerLayout);
         sliderContent = findViewById(R.id.slider_content);
@@ -134,38 +141,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void initWebview(){
-        myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        myWebview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        myWebview.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
-        myWebview.getSettings().setSupportMultipleWindows(false);
-        myWebview.getSettings().setJavaScriptEnabled(true);
-        myWebview.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        this.myWebview.getSettings().setJavaScriptEnabled(true);
+        if (Build.VERSION.SDK_INT >= 21)
+            myWebview.getSettings().setMixedContentMode(0);
         myWebview.getSettings().setSupportZoom(true);
-        if(Build.VERSION.SDK_INT>=16){
-            myWebview.getSettings().setAllowFileAccessFromFileURLs(true);
-            myWebview.getSettings().setAllowUniversalAccessFromFileURLs(true);
-        }
-        myWebview.getSettings().setAllowFileAccess(true);
-        myWebview.getSettings().setAllowContentAccess(true);
         myWebview.getSettings().setBuiltInZoomControls(true);
         myWebview.getSettings().setDisplayZoomControls(false);
-        myWebview.getSettings().setLoadsImagesAutomatically(true);
-        myWebview.getSettings().setBlockNetworkImage(false);
         myWebview.getSettings().setUseWideViewPort(true);
-        myWebview.getSettings().setLoadWithOverviewMode(true);
-        myWebview.getSettings().setAppCacheEnabled(true);
-        myWebview.getSettings().setCacheMode(getResources().getBoolean(R.bool.need_cache)? LOAD_DEFAULT:LOAD_NO_CACHE);
-        myWebview.getSettings().setDomStorageEnabled(true);
-        myWebview.getSettings().setAppCacheEnabled(true);
-        myWebview.getSettings().setUserAgentString(myWebview.getSettings().getUserAgentString()+" androidapp");
-        if (Build.VERSION.SDK_INT >= 21) {
-            myWebview.getSettings().setMixedContentMode(MIXED_CONTENT_ALWAYS_ALLOW);
-        }
-        if (Build.VERSION.SDK_INT >= 17) {
-            myWebview.getSettings().setMediaPlaybackRequiresUserGesture(false);
-        }
+        myWebview.getSettings().setAllowFileAccess(true);
+        this.myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        this.myWebview.getSettings().setUseWideViewPort(true);
+        this.myWebview.getSettings().setLoadWithOverviewMode(true);
+        this.myWebview.getSettings().setAppCacheEnabled(true);
+        this.myWebview.getSettings().setCacheMode(LOAD_NO_CACHE);
+        this.myWebview.getSettings().setDomStorageEnabled(true);
+        this.myWebview.getSettings().setAppCacheEnabled(true);
+        if (Build.VERSION.SDK_INT >= 21) { myWebview.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW ); }
 
-        myWebview.addJavascriptInterface(new AndroidJs(),"AndroidJs");//彩宝
+//        myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+//        myWebview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+//        myWebview.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+////        myWebview.getSettings().setSupportMultipleWindows(false);
+//        myWebview.getSettings().setJavaScriptEnabled(true);
+//        myWebview.setOverScrollMode(View.OVER_SCROLL_NEVER);
+//        myWebview.getSettings().setSupportZoom(true);
+//        if(Build.VERSION.SDK_INT>=16){
+//            myWebview.getSettings().setAllowFileAccessFromFileURLs(true);
+//            myWebview.getSettings().setAllowUniversalAccessFromFileURLs(true);
+//        }
+//        myWebview.getSettings().setAllowFileAccess(true);
+//        myWebview.getSettings().setAllowContentAccess(true);
+//        myWebview.getSettings().setBuiltInZoomControls(true);
+//        myWebview.getSettings().setDisplayZoomControls(false);
+//        myWebview.getSettings().setLoadsImagesAutomatically(true);
+//        myWebview.getSettings().setBlockNetworkImage(false);
+//        myWebview.getSettings().setUseWideViewPort(true);
+//        myWebview.getSettings().setLoadWithOverviewMode(true);
+//        myWebview.getSettings().setAppCacheEnabled(true);
+//        myWebview.getSettings().setSupportZoom(true);
+//        myWebview.getSettings().setCacheMode(getResources().getBoolean(R.bool.need_cache)? LOAD_DEFAULT:LOAD_NO_CACHE);
+//        myWebview.getSettings().setDomStorageEnabled(true);
+        myWebview.getSettings().setPluginState(WebSettings.PluginState.ON);
+
+//        myWebview.getSettings().setAppCacheEnabled(true);
+//        myWebview.getSettings().setUserAgentString(myWebview.getSettings().getUserAgentString()+" androidapp");
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            myWebview.getSettings().setMixedContentMode(MIXED_CONTENT_ALWAYS_ALLOW);
+//        }
+//        if (Build.VERSION.SDK_INT >= 17) {
+//            myWebview.getSettings().setMediaPlaybackRequiresUserGesture(false);
+//        }
+
+//        myWebview.addJavascriptInterface(new AndroidJs(),"AndroidJs");//彩宝
 //        myWebview.addJavascriptInterface(new AndroidJs(),"App9vCom");
 
 
@@ -287,12 +314,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
                 sslErrorHandler.proceed();
-                super.onReceivedSslError(webView, sslErrorHandler, sslError);
-            }
-            @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
-                LogUtil.d("--MainActivity", "onReceivedError:" + error);
+//                super.onReceivedSslError(webView, sslErrorHandler, sslError);
             }
 
         });
@@ -311,6 +333,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         progressBar.setVisibility(View.VISIBLE);
                     }
                 }
+            }
+
+            @Override
+            public void onShowCustomView(View view, CustomViewCallback callback) {
+                super.onShowCustomView(view, callback);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                myWebview.setVisibility(View.GONE);
+                //如果一个视图已经存在，那么立刻终止并新建一个
+                if (xCustomView != null) {
+                    callback.onCustomViewHidden();
+                    return;
+                }
+
+                fullScreenVedio.addView(view);
+                xCustomView = view;
+                xCustomViewCallback = callback;
+                fullScreenVedio.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onHideCustomView() {
+                super.onHideCustomView();
+                if (xCustomView == null)
+                    return;
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                getWindow().clearFlags(1024);
+                xCustomView.setVisibility(View.GONE);
+                fullScreenVedio.removeView(xCustomView);
+                xCustomView = null;
+                fullScreenVedio.setVisibility(View.INVISIBLE);
+                xCustomViewCallback.onCustomViewHidden();
+                myWebview.setVisibility(View.VISIBLE);
             }
 
             @Override

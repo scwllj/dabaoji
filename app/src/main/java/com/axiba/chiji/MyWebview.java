@@ -1,11 +1,7 @@
 package com.axiba.chiji;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -13,7 +9,6 @@ import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-
 
 import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
 import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
@@ -46,7 +41,7 @@ public class MyWebview extends WebView {
         getSettings().setCacheMode(Constant.NEED_CACHE?WebSettings.LOAD_DEFAULT:WebSettings.LOAD_NO_CACHE);
         getSettings().setDomStorageEnabled(true);
         getSettings().setAppCacheEnabled(true);
-        getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36");
+//        getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36");
 //        addJavascriptInterface(new JsInterface(), "jsinterface");
         if (Build.VERSION.SDK_INT >= 21) {
             getSettings().setMixedContentMode(0);

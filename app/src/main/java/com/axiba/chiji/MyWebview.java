@@ -43,9 +43,10 @@ public class MyWebview extends WebView {
         getSettings().setUseWideViewPort(true);
         getSettings().setLoadWithOverviewMode(true);
         getSettings().setAppCacheEnabled(true);
-        getSettings().setCacheMode(getResources().getBoolean(R.bool.need_cache)?WebSettings.LOAD_DEFAULT:WebSettings.LOAD_NO_CACHE);
+        getSettings().setCacheMode(Constant.NEED_CACHE?WebSettings.LOAD_DEFAULT:WebSettings.LOAD_NO_CACHE);
         getSettings().setDomStorageEnabled(true);
         getSettings().setAppCacheEnabled(true);
+        getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36");
 //        addJavascriptInterface(new JsInterface(), "jsinterface");
         if (Build.VERSION.SDK_INT >= 21) {
             getSettings().setMixedContentMode(0);

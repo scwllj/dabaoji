@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -20,16 +21,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Base64;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.DownloadListener;
-import android.webkit.GeolocationPermissions;
-import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
@@ -41,19 +40,21 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import static android.webkit.WebSettings.LOAD_DEFAULT;
 import static android.webkit.WebSettings.LOAD_NO_CACHE;
-import static android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
 import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
 import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private AppCompatTextView refresh,home,back,errorNotice,forward;
+    private AppCompatTextView refresh,home,back,errorNotice,forward,clear;
+    private AppCompatImageView refreshImg,homeImg,backImg,clearImg,forwardImg;
+    private LinearLayout refreshLayout,homeLayout,backLayout,clearLayout,forwardLayout;
     private DrawerLayout drawerLayout;
     private WebView myWebview;
     private RelativeLayout sliderContent,topNavigation;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FrameLayout sliderMenuContainer;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    private boolean showProgressBar;
     private static String[] PERMISSIONS_STORAGE = { "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE" };
 
     private ValueCallback<Uri> mUploadMessage;
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getResources().getBoolean(R.bool.full_screen)){
+        if(false){
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.activity_main);
@@ -88,10 +90,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(back!=null)back.setOnClickListener(this);
         forward = findViewById(R.id.forward);
         if(forward!=null)forward.setOnClickListener(this);
+        clear = findViewById(R.id.clear);
+        if(clear!=null)clear.setOnClickListener(this);
+
+        refreshImg = findViewById(R.id.refresh_img);
+        if(refreshImg!=null)refreshImg.setOnClickListener(this);
+        homeImg = findViewById(R.id.home_img);
+        if(homeImg!=null)homeImg.setOnClickListener(this);
+        backImg = findViewById(R.id.back_img);
+        if(backImg!=null)backImg.setOnClickListener(this);
+        forwardImg = findViewById(R.id.forward_img);
+        if(forwardImg!=null)forwardImg.setOnClickListener(this);
+        clearImg = findViewById(R.id.clear_img);
+        if(clearImg!=null)clearImg.setOnClickListener(this);
+
+        refreshLayout = findViewById(R.id.refresh_layout);
+        if(refreshLayout!=null)refreshLayout.setOnClickListener(this);
+        homeLayout = findViewById(R.id.home_layout);
+        if(homeLayout!=null)homeLayout.setOnClickListener(this);
+        backLayout = findViewById(R.id.back_layout);
+        if(backLayout!=null)backLayout.setOnClickListener(this);
+        forwardLayout = findViewById(R.id.forward_layout);
+        if(forwardLayout!=null)forwardLayout.setOnClickListener(this);
+        clearLayout = findViewById(R.id.clear_layout);
+        if(clearLayout!=null)clearLayout.setOnClickListener(this);
+
         errorNotice = findViewById(R.id.errorNotice);
         if(errorNotice!=null)errorNotice.setOnClickListener(this);
 
-        fullScreenVedio = findViewById(R.id.fullscreen);
+	    fullScreenVedio = findViewById(R.id.fullScreenVedio);
         myWebview = findViewById(R.id.webview);
         drawerLayout = findViewById(R.id.drawerLayout);
         sliderContent = findViewById(R.id.slider_content);
@@ -105,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return myWebview.getScrollY()>0;
             }
         });
-        myWebview.loadUrl(getResources().getString(R.string.start_url));
+        myWebview.loadUrl(Constant.START_URL);
         initByConfig();
         initWebview();
         if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
@@ -115,21 +142,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initByConfig() {
         progressBar.setMax(100);
+	    showProgressBar = Constant.SHOW_PROGRESSBAR;
 
-        if(getResources().getBoolean(R.bool.need_back)&&back!=null)back.setVisibility(View.VISIBLE);
-        switch (getResources().getInteger(R.integer.right_action)){
-            case 1:
-                if(home!=null)home.setVisibility(View.VISIBLE);
-                break;
-            case 2:
-                if(refresh!=null)refresh.setVisibility(View.VISIBLE);
-                break;
-        }
-
-        topNavigation.setVisibility(getResources().getBoolean(R.bool.save_daohang)?View.VISIBLE:View.GONE);
-        final boolean refreshable;
-        swipeRefreshLayout.setEnabled(refreshable=getResources().getBoolean(R.bool.pull_refresh_enable));
-        if(refreshable){
+        swipeRefreshLayout.setEnabled(Constant.PULL_REFRESH);
+        if(Constant.PULL_REFRESH){
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -141,60 +157,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void initWebview(){
-        this.myWebview.getSettings().setJavaScriptEnabled(true);
-        if (Build.VERSION.SDK_INT >= 21)
-            myWebview.getSettings().setMixedContentMode(0);
+        myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        myWebview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        myWebview.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+        myWebview.getSettings().setSupportMultipleWindows(false);
+        myWebview.getSettings().setJavaScriptEnabled(true);
+        myWebview.setOverScrollMode(View.OVER_SCROLL_NEVER);
         myWebview.getSettings().setSupportZoom(true);
+        if(Build.VERSION.SDK_INT>=16){
+            myWebview.getSettings().setAllowFileAccessFromFileURLs(true);
+            myWebview.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        }
+        myWebview.getSettings().setAllowFileAccess(true);
+        myWebview.getSettings().setAllowContentAccess(true);
         myWebview.getSettings().setBuiltInZoomControls(true);
         myWebview.getSettings().setDisplayZoomControls(false);
+        myWebview.getSettings().setLoadsImagesAutomatically(true);
+        myWebview.getSettings().setBlockNetworkImage(false);
         myWebview.getSettings().setUseWideViewPort(true);
-        myWebview.getSettings().setAllowFileAccess(true);
-        this.myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        this.myWebview.getSettings().setUseWideViewPort(true);
-        this.myWebview.getSettings().setLoadWithOverviewMode(true);
-        this.myWebview.getSettings().setAppCacheEnabled(true);
-        this.myWebview.getSettings().setCacheMode(LOAD_NO_CACHE);
-        this.myWebview.getSettings().setDomStorageEnabled(true);
-        this.myWebview.getSettings().setAppCacheEnabled(true);
-        if (Build.VERSION.SDK_INT >= 21) { myWebview.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW ); }
-
-//        myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-//        myWebview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-//        myWebview.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
-////        myWebview.getSettings().setSupportMultipleWindows(false);
-//        myWebview.getSettings().setJavaScriptEnabled(true);
-//        myWebview.setOverScrollMode(View.OVER_SCROLL_NEVER);
-//        myWebview.getSettings().setSupportZoom(true);
-//        if(Build.VERSION.SDK_INT>=16){
-//            myWebview.getSettings().setAllowFileAccessFromFileURLs(true);
-//            myWebview.getSettings().setAllowUniversalAccessFromFileURLs(true);
-//        }
-//        myWebview.getSettings().setAllowFileAccess(true);
-//        myWebview.getSettings().setAllowContentAccess(true);
-//        myWebview.getSettings().setBuiltInZoomControls(true);
-//        myWebview.getSettings().setDisplayZoomControls(false);
-//        myWebview.getSettings().setLoadsImagesAutomatically(true);
-//        myWebview.getSettings().setBlockNetworkImage(false);
-//        myWebview.getSettings().setUseWideViewPort(true);
-//        myWebview.getSettings().setLoadWithOverviewMode(true);
-//        myWebview.getSettings().setAppCacheEnabled(true);
-//        myWebview.getSettings().setSupportZoom(true);
-//        myWebview.getSettings().setCacheMode(getResources().getBoolean(R.bool.need_cache)? LOAD_DEFAULT:LOAD_NO_CACHE);
-//        myWebview.getSettings().setDomStorageEnabled(true);
-        myWebview.getSettings().setPluginState(WebSettings.PluginState.ON);
-
-//        myWebview.getSettings().setAppCacheEnabled(true);
-//        myWebview.getSettings().setUserAgentString(myWebview.getSettings().getUserAgentString()+" androidapp");
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            myWebview.getSettings().setMixedContentMode(MIXED_CONTENT_ALWAYS_ALLOW);
-//        }
-//        if (Build.VERSION.SDK_INT >= 17) {
-//            myWebview.getSettings().setMediaPlaybackRequiresUserGesture(false);
-//        }
-
-//        myWebview.addJavascriptInterface(new AndroidJs(),"AndroidJs");//彩宝
-//        myWebview.addJavascriptInterface(new AndroidJs(),"App9vCom");
-
+        myWebview.getSettings().setLoadWithOverviewMode(true);
+        myWebview.getSettings().setAppCacheEnabled(true);
+        myWebview.getSettings().setCacheMode(Constant.NEED_CACHE? LOAD_DEFAULT:LOAD_NO_CACHE);
+        myWebview.getSettings().setDomStorageEnabled(true);
+        myWebview.getSettings().setAppCacheEnabled(true);
+        if (Build.VERSION.SDK_INT >= 21) {
+            myWebview.getSettings().setMixedContentMode(0);
+        }
+        if (Build.VERSION.SDK_INT >= 17) {
+            myWebview.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        }
 
         myWebview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -239,12 +230,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 MainActivity.this.startActivity(intent);
             }
         });
-        final String outer = "https://wpa.qq.com/msgrd";
         myWebview.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if(getResources().getBoolean(R.bool.outer_web)){
-                    String yuming = getResources().getString(R.string.home_url).split("/")[2];
+                LogUtil.d("MainActivity","---shouldOverrideUrlLoading:"+url);
+                if(Constant.OUTER_WEB){
+		            String yuming = Constant.HOME_URL.split("/")[2];
                     if(url.contains(yuming)){
                         return super.shouldOverrideUrlLoading(view,url);
                     }
@@ -253,17 +244,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                     /*---------*/
                 }
-//                if(url.contains(outer)){
-//                    openSystemBrower(url);
-//                    return true;
-//                }
-                Log.d("MainActivity", "---shouldOverrideUrlLoading: "+url);
-                if(url.endsWith(".mp4")){
-                    return true;
-                }
-
                 try {
-                    if (url.toLowerCase().startsWith("intent://")) {
+                    if (url.toLowerCase().startsWith("about:blank")) {
+                        myWebview.goBack();
+                        return true;
+                    }
+                    else if (url.toLowerCase().startsWith("intent://")) {
                         Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
@@ -272,8 +258,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     else if (url.toLowerCase().contains("https://qr.alipay.com")) {
                         int index = url.toLowerCase().indexOf("https://qr.alipay.com");
                         String newUrl = url.substring(index);
-                        view.loadUrl(newUrl);
-                        return true;
+                    	return super.shouldOverrideUrlLoading(view,newUrl);
                     }
                     else if (!url.toLowerCase().startsWith("http")) {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -289,18 +274,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return super.shouldOverrideUrlLoading(view, url);
             }
 
+            
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                LogUtil.d("MainActivity","---shouldOverrideUrlLoading:"+request);
+                return super.shouldOverrideUrlLoading(view, request);
+            }
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                errorNotice.setVisibility(View.INVISIBLE);
+
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
             }
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                if (url.toLowerCase().contains(".swf") || url.toLowerCase().contains(".mp4")) {
-                    return new WebResourceResponse(null, null, null);
-                }
-                if (!url.toLowerCase().contains(getString(R.string.home_url))) { //过滤广告
+                if (!url.toLowerCase().contains(Constant.HOME_URL)) { //过滤广告
                     if (!hasAd(MainActivity.this, url)) {
                         return super.shouldInterceptRequest(view, url);
                     } else {
@@ -311,10 +305,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return super.shouldInterceptRequest(view, url);
                 }
             }
+
+            @TargetApi(21)
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                if (!url.toLowerCase().contains(Constant.HOME_URL)) { //过滤广告
+                    if (!hasAd(MainActivity.this, url)) {
+                        return super.shouldInterceptRequest(view, request);
+                    } else {
+                        return new WebResourceResponse(null, null, null);
+                    }
+                } else {
+                    return super.shouldInterceptRequest(view, request);
+                }
+            }
+
             @Override
             public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
                 sslErrorHandler.proceed();
-//                super.onReceivedSslError(webView, sslErrorHandler, sslError);
+            }
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
             }
 
         });
@@ -326,21 +339,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     progressBar.setProgress(newProgress);
                     if(newProgress==100){
                         progressBar.setVisibility(View.INVISIBLE);
-                        if (getResources().getBoolean(R.bool.pull_refresh_enable)) {
+                        if (Constant.PULL_REFRESH) {
                                 swipeRefreshLayout.setRefreshing(false);
                         }
                     }else{
-                        progressBar.setVisibility(View.VISIBLE);
+                        if(showProgressBar) progressBar.setVisibility(View.VISIBLE);
                     }
                 }
             }
 
             @Override
+            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+                LogUtil.d("MainActivity","---onCreateWindow");
+                return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+            }
+
+            @Override
             public void onShowCustomView(View view, CustomViewCallback callback) {
                 super.onShowCustomView(view, callback);
+                LogUtil.d("MainActivity","---onShowCustomView");
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 myWebview.setVisibility(View.GONE);
-                //如果一个视图已经存在，那么立刻终止并新建一个
                 if (xCustomView != null) {
                     callback.onCustomViewHidden();
                     return;
@@ -355,24 +374,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onHideCustomView() {
                 super.onHideCustomView();
-                if (xCustomView == null)
-                    return;
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                getWindow().clearFlags(1024);
-                xCustomView.setVisibility(View.GONE);
-                fullScreenVedio.removeView(xCustomView);
-                xCustomView = null;
-                fullScreenVedio.setVisibility(View.INVISIBLE);
-                xCustomViewCallback.onCustomViewHidden();
-                myWebview.setVisibility(View.VISIBLE);
+                hideCustomView();
             }
 
             @Override
-            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-
-                result.confirm();
-                return true;
-//                return super.onJsAlert(view, url, message, result);
+            public boolean onJsAlert(WebView view, String url, String message,final JsResult result) {
+                new AlertDialog.Builder(MainActivity.this).setMessage(message).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        result.confirm();
+                    }
+                }).show();
+		        return true;
             }
 
             @TargetApi(21)
@@ -380,7 +393,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 if (MainActivity.this.mUploadMessage5 != null)
                 {
-                    MainActivity.this.mUploadMessage5.onReceiveValue(null);
+                    MainActivity.this.mUploadMessage5.onReceiveValue(new Uri[]{});
                 }
                 mUploadMessage5 = paramAnonymousValueCallback;
                 Intent intent = paramAnonymousFileChooserParams.createIntent();
@@ -391,9 +404,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 catch (ActivityNotFoundException e)
                 {
-
+					mUploadMessage5.onReceiveValue(new Uri[]{});
+					mUploadMessage5 = null;
                 }
-                return false;
+                return true;
             }
 
             public void openFileChooser(ValueCallback<Uri> paramAnonymousValueCallback)
@@ -408,6 +422,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             public void openFileChooser(ValueCallback<Uri> paramAnonymousValueCallback, String paramAnonymousString1, String paramAnonymousString2)
             {
+            	if(mUploadMessage != null){
+					mUploadMessage.onReceiveValue(null);
+            	}
                 mUploadMessage = paramAnonymousValueCallback;
                 Intent intent = new Intent("android.intent.action.GET_CONTENT");
                 intent.addCategory("android.intent.category.OPENABLE");
@@ -415,6 +432,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 MainActivity.this.startActivityForResult(Intent.createChooser(intent, "File Browser"), CODE_UPLOAD_FILE_SINGLE);
             }
         });
+    }
+
+    private void hideCustomView() {
+        if (xCustomView == null)
+            return;
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getWindow().clearFlags(1024);
+        xCustomView.setVisibility(View.GONE);
+        fullScreenVedio.removeView(xCustomView);
+        xCustomView = null;
+        fullScreenVedio.setVisibility(View.INVISIBLE);
+        xCustomViewCallback.onCustomViewHidden();
+        myWebview.setVisibility(View.VISIBLE);
     }
 
     public static boolean hasAd(Context context, String url) {
@@ -435,33 +465,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    @SuppressLint("NewApi")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Uri result = data == null || resultCode != RESULT_OK ? null : data.getData();
-        if(result!=null){
-            if(requestCode==CODE_UPLOAD_FILE_MULT){
-                    if (mUploadMessage5 != null) {
-                        mUploadMessage5.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode,data));
-                    }
-                    mUploadMessage5 = null;
+        
+        if(requestCode==CODE_UPLOAD_FILE_MULT){
+        	if(result!=null && mUploadMessage5 != null){
+        		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mUploadMessage5.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode,data));
+                }else{
+                    mUploadMessage5.onReceiveValue(new Uri[]{result});
+                }
+            }else{
+            	if(mUploadMessage5 != null){
+            		mUploadMessage5.onReceiveValue(new Uri[]{});
+            	}
             }
         }else if (requestCode==CODE_UPLOAD_FILE_SINGLE){
             if(mUploadMessage!=null){
-//                String path = getRealPathByUri(BaseActivity.this,result);
-//                mUploadMessage.onReceiveValue(path==null?null:Uri.fromFile(new File(path)));
                 mUploadMessage.onReceiveValue(result);
             }
-            mUploadMessage = null;
         }
-
+        if(mUploadMessage5 != null){
+        	mUploadMessage5=null;
+        }
+        if(mUploadMessage != null){
+        	mUploadMessage=null;
+        }
     }
 
     @Override
     public void onClick(View v) {
         if(v==home){
-            myWebview.loadUrl(getResources().getString(R.string.home_url));
+            myWebview.loadUrl(Constant.HOME_URL);
         }else if (v==refresh){
             myWebview.reload();
         }else if (v==back){
@@ -484,6 +521,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(xCustomView!=null){
+                hideCustomView();
+                return true;
+            }
             if (myWebview.canGoBack()) {
                 myWebview.goBack();
                 return true;
@@ -498,29 +539,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    public class AndroidJs {
-        @JavascriptInterface
-        public void share(){
-            MainActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Share.shareWebLinkWithIcon(MainActivity.this,myWebview.getTitle()+"\n"+myWebview.getUrl());
-                }
-            });
-        }
-
-        @JavascriptInterface
-        public void OpenWithSafari(final String url){
-            MainActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    openSystemBrower(url);
-                }
-            });
-        }
-
     }
 
 }

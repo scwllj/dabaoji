@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="windowBg">#FBFBFB</color>
     <color name="statusbar_color">#000000</color>
+
+    <color name="tint">#444444</color>
 </resources>

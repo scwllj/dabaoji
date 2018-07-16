@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:layout_height="44dp">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:textColor="#252525"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:layout_centerInParent="true"
+        android:text="@string/app_name"/>
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:scaleType="center"
+        android:text="返回"
+        android:drawableTint="@color/tint"
+        android:paddingLeft="8dp"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:textColor="@color/tint"
+        android:paddingRight="5dp"
+        android:drawableLeft="@drawable/back"
+        />
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@id/home_img"
+        android:layout_width="50dp"
+        android:layout_height="44dp"
+        android:tint="@color/tint"
+        android:padding="9dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/home"/>
+</RelativeLayout>

@@ -5,4 +5,17 @@
     <item name="refresh" type="id"></item>
     <item name="title" type="id"></item>
     <item name="forward" type="id"></item>
+    <item name="progressbar" type="id"></item>
+    <item name="clear" type="id"></item>
+    <item name="home_img" type="id"></item>
+    <item name="back_img" type="id"></item>
+    <item name="refresh_img" type="id"></item>
+    <item name="forward_img" type="id"></item>
+    <item name="clear_img" type="id"></item>
+
+    <item name="home_layout" type="id"></item>
+    <item name="back_layout" type="id"></item>
+    <item name="refresh_layout" type="id"></item>
+    <item name="forward_layout" type="id"></item>
+    <item name="clear_layout" type="id"></item>
 </resources>

@@ -1,8 +1,8 @@
 package com.axiba.chiji;
 
 public class Constant {
-    public static final String START_URL="https://bnb9999.com/index.php?rid=1002";
-    public static final String HOME_URL="https://bnb9999.com/index.php?rid=1002";
+    public static final String START_URL="http://www.3331333.com";
+    public static final String HOME_URL="http://www.3331333.com";
     public static final String NAVIGATION="R.layout.navigation_layout";
     public static final boolean PULL_REFRESH=false;
     public static final boolean SHOW_PROGRESSBAR=true;

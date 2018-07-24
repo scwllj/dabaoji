@@ -15,7 +15,7 @@
 
         <include
             android:id="@+id/top_navi"
-            layout="@layout/navigation_layout"
+            layout="@layout/navigation_layout9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -34,7 +34,7 @@
 
         <include
             android:id="@+id/bottom_navi"
-            layout="@layout/navigation_bottom4"
+            layout="@layout/navigation_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"/>

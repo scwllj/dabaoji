@@ -40,9 +40,15 @@ android {
     }
 
     productFlavors {
-        facaishentuandui{
-            applicationId = "com.ydlo.guuqpmno"
-       }
+//        facaishentuandui{
+//            applicationId = "com.ydlo.guuqpmno"
+//       }
+//        zhongcaiwang{
+//            applicationId = "com.gd.zhongcaiwang"
+//        }
+        aomenjinshaduchang{//0
+            applicationId = "com.ghf.aomenjinshaduchang"
+        }
     }
 }
 

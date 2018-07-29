@@ -38,38 +38,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"/>
-        <View
+        <include
+            layout="@layout/main_layer_top"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_below="@id/top_navi"
-            android:background="@drawable/top_title_shader"/>
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/errorNotice"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#fefefe"
-            android:gravity="center"
-            android:visibility="invisible"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="#343434"
-            android:textSize="24sp"
-            android:typeface="sans"
-            android:layout_below="@+id/top_navi"
-            android:layout_above="@+id/bottom_navi"
-            tools:text="加载失败，点击重试" />
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:visibility="invisible"
-            android:layout_below="@+id/top_navi" />
-        <FrameLayout
-            android:id="@+id/fullScreenVedio"
-            android:layout_width="match_parent"
-            android:visibility="invisible"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
     </RelativeLayout>
     <FrameLayout
         android:id="@+id/slider_menu_container"

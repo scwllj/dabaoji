@@ -46,9 +46,23 @@ android {
 //        zhongcaiwang{
 //            applicationId = "com.gd.zhongcaiwang"
 //        }
-        aomenjinshaduchang{//0
-            applicationId = "com.ghf.aomenjinshaduchang"
+//        aomenjinshaduchang{//0
+//            applicationId = "com.ghf.aomenjinshaduchang"
+//        }
+//        bengangtai{
+//            applicationId = "com.gbs.bengangtai"
+//        }
+
+//        jindingjihua{
+//            applicationId = "com.ghf.jindingjihua"
+//        }
+        taiyangcheng{
+            applicationId = "com.bfd.taiyangcheng"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION:"sensor"
+            ]
         }
+
     }
 }
 

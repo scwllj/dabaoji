@@ -1,6 +1,5 @@
 package com.axiba.chiji;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -16,6 +15,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,8 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.DownloadListener;
@@ -45,25 +45,27 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.io.File;
+
 import static android.webkit.WebSettings.LOAD_DEFAULT;
 import static android.webkit.WebSettings.LOAD_NO_CACHE;
 import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
 import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private AppCompatTextView refresh,home,back,errorNotice,forward,clear;
-    private AppCompatImageView refreshImg,homeImg,backImg,clearImg,forwardImg;
-    private LinearLayout refreshLayout,homeLayout,backLayout,clearLayout,forwardLayout;
+    private AppCompatTextView refresh, home, back, forward, clear;
+    private AppCompatImageView refreshImg, homeImg, backImg, clearImg, forwardImg;
+    private LinearLayout refreshLayout, homeLayout, backLayout, clearLayout, errorNotice, forwardLayout;
     private DrawerLayout drawerLayout;
     private WebView myWebview;
-    private RelativeLayout sliderContent,topNavigation;
+    private RelativeLayout sliderContent, topNavigation;
     private ProgressBar progressBar;
     private FrameLayout sliderMenuContainer;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private boolean showProgressBar;
-    private static String[] PERMISSIONS_STORAGE = { "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE" };
+    private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
 
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessage5;
@@ -75,50 +77,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private WebChromeClient.CustomViewCallback xCustomViewCallback;
     private FrameLayout fullScreenVedio;
 
+    private boolean errorLoaded;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(false){
+        if (false) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.activity_main);
         refresh = findViewById(R.id.refresh);
-        if(refresh!=null)refresh.setOnClickListener(this);
+        if (refresh != null) refresh.setOnClickListener(this);
         home = findViewById(R.id.home);
-        if(home!=null)home.setOnClickListener(this);
+        if (home != null) home.setOnClickListener(this);
         back = findViewById(R.id.back);
-        if(back!=null)back.setOnClickListener(this);
+        if (back != null) back.setOnClickListener(this);
         forward = findViewById(R.id.forward);
-        if(forward!=null)forward.setOnClickListener(this);
+        if (forward != null) forward.setOnClickListener(this);
         clear = findViewById(R.id.clear);
-        if(clear!=null)clear.setOnClickListener(this);
+        if (clear != null) clear.setOnClickListener(this);
 
         refreshImg = findViewById(R.id.refresh_img);
-        if(refreshImg!=null)refreshImg.setOnClickListener(this);
+        if (refreshImg != null) refreshImg.setOnClickListener(this);
         homeImg = findViewById(R.id.home_img);
-        if(homeImg!=null)homeImg.setOnClickListener(this);
+        if (homeImg != null) homeImg.setOnClickListener(this);
         backImg = findViewById(R.id.back_img);
-        if(backImg!=null)backImg.setOnClickListener(this);
+        if (backImg != null) backImg.setOnClickListener(this);
         forwardImg = findViewById(R.id.forward_img);
-        if(forwardImg!=null)forwardImg.setOnClickListener(this);
+        if (forwardImg != null) forwardImg.setOnClickListener(this);
         clearImg = findViewById(R.id.clear_img);
-        if(clearImg!=null)clearImg.setOnClickListener(this);
+        if (clearImg != null) clearImg.setOnClickListener(this);
 
         refreshLayout = findViewById(R.id.refresh_layout);
-        if(refreshLayout!=null)refreshLayout.setOnClickListener(this);
+        if (refreshLayout != null) refreshLayout.setOnClickListener(this);
         homeLayout = findViewById(R.id.home_layout);
-        if(homeLayout!=null)homeLayout.setOnClickListener(this);
+        if (homeLayout != null) homeLayout.setOnClickListener(this);
         backLayout = findViewById(R.id.back_layout);
-        if(backLayout!=null)backLayout.setOnClickListener(this);
+        if (backLayout != null) backLayout.setOnClickListener(this);
         forwardLayout = findViewById(R.id.forward_layout);
-        if(forwardLayout!=null)forwardLayout.setOnClickListener(this);
+        if (forwardLayout != null) forwardLayout.setOnClickListener(this);
         clearLayout = findViewById(R.id.clear_layout);
-        if(clearLayout!=null)clearLayout.setOnClickListener(this);
+        if (clearLayout != null) clearLayout.setOnClickListener(this);
 
         errorNotice = findViewById(R.id.errorNotice);
-        if(errorNotice!=null)errorNotice.setOnClickListener(this);
+        if (errorNotice != null) errorNotice.setOnClickListener(this);
 
-	    fullScreenVedio = findViewById(R.id.fullScreenVedio);
+        fullScreenVedio = findViewById(R.id.fullScreenVedio);
         myWebview = findViewById(R.id.webview);
         drawerLayout = findViewById(R.id.drawerLayout);
         sliderContent = findViewById(R.id.slider_content);
@@ -129,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
             public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
-                return myWebview.getScrollY()>0;
+                return myWebview.getScrollY() > 0;
             }
         });
         myWebview.loadUrl(Constant.START_URL);
@@ -142,10 +146,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initByConfig() {
         progressBar.setMax(100);
-	    showProgressBar = Constant.SHOW_PROGRESSBAR;
+        showProgressBar = Constant.SHOW_PROGRESSBAR;
 
         swipeRefreshLayout.setEnabled(Constant.PULL_REFRESH);
-        if(Constant.PULL_REFRESH){
+        if (Constant.PULL_REFRESH) {
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -156,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void initWebview(){
+    private void initWebview() {
         myWebview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         myWebview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         myWebview.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
@@ -164,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myWebview.getSettings().setJavaScriptEnabled(true);
         myWebview.setOverScrollMode(View.OVER_SCROLL_NEVER);
         myWebview.getSettings().setSupportZoom(true);
-        if(Build.VERSION.SDK_INT>=16){
+        if (Build.VERSION.SDK_INT >= 16) {
             myWebview.getSettings().setAllowFileAccessFromFileURLs(true);
             myWebview.getSettings().setAllowUniversalAccessFromFileURLs(true);
         }
@@ -177,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myWebview.getSettings().setUseWideViewPort(true);
         myWebview.getSettings().setLoadWithOverviewMode(true);
         myWebview.getSettings().setAppCacheEnabled(true);
-        myWebview.getSettings().setCacheMode(Constant.NEED_CACHE? LOAD_DEFAULT:LOAD_NO_CACHE);
+        myWebview.getSettings().setCacheMode(Constant.NEED_CACHE ? LOAD_DEFAULT : LOAD_NO_CACHE);
         myWebview.getSettings().setDomStorageEnabled(true);
         myWebview.getSettings().setAppCacheEnabled(true);
         if (Build.VERSION.SDK_INT >= 21) {
@@ -191,26 +195,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onLongClick(View v) {
                 final WebView.HitTestResult result = myWebview.getHitTestResult();
-                if ((result.getType() == IMAGE_TYPE) || (result.getType() == SRC_IMAGE_ANCHOR_TYPE))
-                {
+                if ((result.getType() == IMAGE_TYPE) || (result.getType() == SRC_IMAGE_ANCHOR_TYPE)) {
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             new AlertDialog.Builder(MainActivity.this).setMessage("保存图片到相册?")
-                                    .setNegativeButton("暂不",null)
+                                    .setNegativeButton("暂不", null)
                                     .setPositiveButton("保存", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            if (ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0)
-                                            {
+                                            if (ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
                                                 ActivityCompat.requestPermissions(MainActivity.this, MainActivity.PERMISSIONS_STORAGE, 1);
                                                 return;
                                             }
-                                            if(result.getExtra().startsWith("http")){
-                                                FileUtils.savePicture(MainActivity.this,""+System.currentTimeMillis(),result.getExtra());
-                                            }else{
+                                            if (result.getExtra().startsWith("http")) {
+                                                FileUtils.savePicture(MainActivity.this, "" + System.currentTimeMillis(), result.getExtra());
+                                            } else {
                                                 byte[] mBitmap = Base64.decode(result.getExtra(), Base64.DEFAULT);
-                                                FileUtils.savaFileToSD(MainActivity.this,""+System.currentTimeMillis(),mBitmap);
+                                                FileUtils.savaFileToSD(MainActivity.this, "" + System.currentTimeMillis(), mBitmap);
 //                            Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
                                             }
                                         }
@@ -222,22 +224,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return false;
             }
         });
-        myWebview.setDownloadListener(new DownloadListener()
-        {
-            public void onDownloadStart(String paramAnonymousString1, String paramAnonymousString2, String paramAnonymousString3, String paramAnonymousString4, long paramAnonymousLong)
-            {
+        myWebview.setDownloadListener(new DownloadListener() {
+            public void onDownloadStart(String paramAnonymousString1, String paramAnonymousString2, String paramAnonymousString3, String paramAnonymousString4, long paramAnonymousLong) {
                 Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(paramAnonymousString1));
                 MainActivity.this.startActivity(intent);
             }
         });
-        myWebview.setWebViewClient(new WebViewClient(){
+        myWebview.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                LogUtil.d("MainActivity","---shouldOverrideUrlLoading:"+url);
-                if(Constant.OUTER_WEB){
-		            String yuming = Constant.HOME_URL.split("/")[2];
-                    if(url.contains(yuming)){
-                        return super.shouldOverrideUrlLoading(view,url);
+                LogUtil.d("MainActivity", "---shouldOverrideUrlLoading:" + url);
+                if (Constant.OUTER_WEB) {
+                    String yuming = Constant.HOME_URL.split("/")[2];
+                    if (url.contains(yuming)) {
+                        return super.shouldOverrideUrlLoading(view, url);
                     }
                     /*直接跳系统浏览器 */
                     openSystemBrower(url);
@@ -248,48 +248,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (url.toLowerCase().startsWith("about:blank")) {
                         myWebview.goBack();
                         return true;
-                    }
-                    else if (url.toLowerCase().startsWith("intent://")) {
+                    } else if (url.toLowerCase().startsWith("intent://")) {
                         Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         return true;
-                    }
-                    else if (url.toLowerCase().contains("https://qr.alipay.com")) {
+                    } else if (url.toLowerCase().contains("https://qr.alipay.com")) {
                         int index = url.toLowerCase().indexOf("https://qr.alipay.com");
                         String newUrl = url.substring(index);
-                    	return super.shouldOverrideUrlLoading(view,newUrl);
-                    }
-                    else if (!url.toLowerCase().startsWith("http")) {
+                        return super.shouldOverrideUrlLoading(view, newUrl);
+                    } else if (!url.toLowerCase().startsWith("http")) {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.setData(Uri.parse(url));
                         startActivity(intent);
                         return true;
                     }
-                    return super.shouldOverrideUrlLoading(view,url);
+                    return super.shouldOverrideUrlLoading(view, url);
                 } catch (Exception e) {
 //                    Toast.makeText(BaseActivity.this, "无法打开指定应用，请先确认应用是否安装！", Toast.LENGTH_SHORT).show();
                 }
                 return super.shouldOverrideUrlLoading(view, url);
             }
 
-            
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                LogUtil.d("MainActivity","---shouldOverrideUrlLoading:"+request);
+                LogUtil.d("MainActivity", "---shouldOverrideUrlLoading:" + request);
                 return super.shouldOverrideUrlLoading(view, request);
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-
+                errorLoaded = false;
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                LogUtil.d("MainActivity", "---onPageFinished");
             }
 
             @Override
@@ -306,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
 
-            @TargetApi(21)
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
@@ -325,39 +323,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
                 sslErrorHandler.proceed();
             }
+
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                LogUtil.d("MainActivity", "---onReceivedError" + errorCode + "__" + description);
+                if (errorCode == -2) {
+                    errorNotice.setVisibility(View.VISIBLE);
+                    errorLoaded = true;
+                }
+            }
+
+
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                super.onReceivedHttpError(view, request, errorResponse);
+                LogUtil.d("MainActivity","---onReceivedHttpError__"+request.getUrl()+"__"+errorResponse.getStatusCode());
+                if (errorResponse.getStatusCode() == 404 && request.getUrl().toString().equals(Constant.START_URL)) {
+                    errorNotice.setVisibility(View.VISIBLE);
+                    errorLoaded = true;
+                }else if (errorResponse.getStatusCode() == 500){
+                    errorNotice.setVisibility(View.VISIBLE);
+                    errorLoaded = true;
+                }
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
+                LogUtil.d("MainActivity", "---onReceivedError" + error.getErrorCode());
+                if (error.getErrorCode() == -2) {
+                    errorNotice.setVisibility(View.VISIBLE);
+                    errorLoaded = true;
+                }
             }
 
         });
-        myWebview.setWebChromeClient(new WebChromeClient(){
+
+        myWebview.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
                 if (progressBar != null) {
                     progressBar.setProgress(newProgress);
-                    if(newProgress==100){
+                    if (newProgress == 100) {
+                        errorNotice.setVisibility(errorLoaded ? View.VISIBLE : View.INVISIBLE);
                         progressBar.setVisibility(View.INVISIBLE);
                         if (Constant.PULL_REFRESH) {
-                                swipeRefreshLayout.setRefreshing(false);
+                            swipeRefreshLayout.setRefreshing(false);
                         }
-                    }else{
-                        if(showProgressBar) progressBar.setVisibility(View.VISIBLE);
+                    } else {
+                        if (showProgressBar) progressBar.setVisibility(View.VISIBLE);
                     }
                 }
             }
 
             @Override
             public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-                LogUtil.d("MainActivity","---onCreateWindow");
+                LogUtil.d("MainActivity", "---onCreateWindow");
                 return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
             }
 
             @Override
             public void onShowCustomView(View view, CustomViewCallback callback) {
                 super.onShowCustomView(view, callback);
-                LogUtil.d("MainActivity","---onShowCustomView");
+                LogUtil.d("MainActivity", "---onShowCustomView");
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 myWebview.setVisibility(View.GONE);
                 if (xCustomView != null) {
@@ -378,53 +411,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public boolean onJsAlert(WebView view, String url, String message,final JsResult result) {
+            public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
                 new AlertDialog.Builder(MainActivity.this).setMessage(message).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         result.confirm();
                     }
                 }).show();
-		        return true;
+                return true;
             }
 
             @TargetApi(21)
-            public boolean onShowFileChooser(WebView paramAnonymousWebView, ValueCallback<Uri[]> paramAnonymousValueCallback, WebChromeClient.FileChooserParams paramAnonymousFileChooserParams)
-            {
-                if (MainActivity.this.mUploadMessage5 != null)
-                {
+            public boolean onShowFileChooser(WebView paramAnonymousWebView, ValueCallback<Uri[]> paramAnonymousValueCallback, WebChromeClient.FileChooserParams paramAnonymousFileChooserParams) {
+                if (MainActivity.this.mUploadMessage5 != null) {
                     MainActivity.this.mUploadMessage5.onReceiveValue(new Uri[]{});
                 }
                 mUploadMessage5 = paramAnonymousValueCallback;
                 Intent intent = paramAnonymousFileChooserParams.createIntent();
-                try
-                {
+                try {
                     MainActivity.this.startActivityForResult(intent, CODE_UPLOAD_FILE_MULT);
                     return true;
-                }
-                catch (ActivityNotFoundException e)
-                {
-					mUploadMessage5.onReceiveValue(new Uri[]{});
-					mUploadMessage5 = null;
+                } catch (ActivityNotFoundException e) {
+                    mUploadMessage5.onReceiveValue(new Uri[]{});
+                    mUploadMessage5 = null;
                 }
                 return true;
             }
 
-            public void openFileChooser(ValueCallback<Uri> paramAnonymousValueCallback)
-            {
+            public void openFileChooser(ValueCallback<Uri> paramAnonymousValueCallback) {
                 openFileChooser(paramAnonymousValueCallback, "*/*");
             }
 
-            public void openFileChooser(ValueCallback<Uri> paramAnonymousValueCallback, String paramAnonymousString)
-            {
+            public void openFileChooser(ValueCallback<Uri> paramAnonymousValueCallback, String paramAnonymousString) {
                 openFileChooser(paramAnonymousValueCallback, paramAnonymousString, null);
             }
 
-            public void openFileChooser(ValueCallback<Uri> paramAnonymousValueCallback, String paramAnonymousString1, String paramAnonymousString2)
-            {
-            	if(mUploadMessage != null){
-					mUploadMessage.onReceiveValue(null);
-            	}
+            public void openFileChooser(ValueCallback<Uri> paramAnonymousValueCallback, String paramAnonymousString1, String paramAnonymousString2) {
+                if (mUploadMessage != null) {
+                    mUploadMessage.onReceiveValue(null);
+                }
                 mUploadMessage = paramAnonymousValueCallback;
                 Intent intent = new Intent("android.intent.action.GET_CONTENT");
                 intent.addCategory("android.intent.category.OPENABLE");
@@ -458,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
-    private void openSystemBrower(String url){
+    private void openSystemBrower(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.parse(url));
@@ -469,59 +494,91 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Uri result = data == null || resultCode != RESULT_OK ? null : data.getData();
-        
-        if(requestCode==CODE_UPLOAD_FILE_MULT){
-        	if(result!=null && mUploadMessage5 != null){
-        		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mUploadMessage5.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode,data));
-                }else{
+
+        if (requestCode == CODE_UPLOAD_FILE_MULT) {
+            if (result != null && mUploadMessage5 != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mUploadMessage5.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                } else {
                     mUploadMessage5.onReceiveValue(new Uri[]{result});
                 }
-            }else{
-            	if(mUploadMessage5 != null){
-            		mUploadMessage5.onReceiveValue(new Uri[]{});
-            	}
+            } else {
+                if (mUploadMessage5 != null) {
+                    mUploadMessage5.onReceiveValue(new Uri[]{});
+                }
             }
-        }else if (requestCode==CODE_UPLOAD_FILE_SINGLE){
-            if(mUploadMessage!=null){
+        } else if (requestCode == CODE_UPLOAD_FILE_SINGLE) {
+            if (mUploadMessage != null) {
                 mUploadMessage.onReceiveValue(result);
             }
         }
-        if(mUploadMessage5 != null){
-        	mUploadMessage5=null;
+        if (mUploadMessage5 != null) {
+            mUploadMessage5 = null;
         }
-        if(mUploadMessage != null){
-        	mUploadMessage=null;
+        if (mUploadMessage != null) {
+            mUploadMessage = null;
         }
     }
 
     @Override
     public void onClick(View v) {
-        if(v==home){
+        if (v == home || v == homeLayout || v == homeImg) {
             myWebview.loadUrl(Constant.HOME_URL);
-        }else if (v==refresh){
+        } else if (v == refresh || v == refreshLayout || v == refreshImg) {
             myWebview.reload();
-        }else if (v==back){
-            if(myWebview.canGoBack()){
+        } else if (v == back || v == backLayout || v == backImg) {
+            if (myWebview.canGoBack()) {
                 myWebview.goBack();
             }
-        }else if (v==back){
-            if(myWebview.canGoForward()){
+        } else if (v == forward || v == forwardLayout || v == forwardImg) {
+            if (myWebview.canGoForward()) {
                 myWebview.goForward();
             }
-        }
-        else if (v==errorNotice){
-            errorNotice.setVisibility(View.GONE);
+        } else if (v == clear || v == clearLayout || v == clearImg) {
+            clearCache();
+        } else if (v == errorNotice) {
             myWebview.reload();
         }
     }
+
+    private void clearCache() {
+        new android.app.AlertDialog.Builder(MainActivity.this).setMessage("确认需要清理缓存？")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("清理", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        clearWebViewCache();
+                        Toast.makeText(MainActivity.this, "已成功清理缓存", Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
+    }
+
+    public void clearWebViewCache() {
+        //清理Webview缓存数据库
+        try {
+            myWebview.clearCache(true);
+            myWebview.clearFormData();
+            File file = getCacheDir();
+            if ((file != null && file.exists()) && file.isDirectory()) {
+                for (File item : file.listFiles()) {
+                    item.delete();
+                }
+                file.delete();
+            }
+            deleteDatabase("webview.db");
+            deleteDatabase("webviewCache.db");
+        } catch (Exception e) {
+            Log.e("----clearWebViewCache", "" + e.getMessage());
+        }
+    }
+
 
     long mills = 0;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(xCustomView!=null){
+            if (xCustomView != null) {
                 hideCustomView();
                 return true;
             }

@@ -11,18 +11,18 @@
         android:id="@+id/errorNotice"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:visibility="invisible"
+        android:orientation="vertical"
+        android:visibility="visible"
         android:background="#fefefe"
         android:gravity="center">
         <android.support.v7.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/error_loaded"/>
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/error"/>
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginTop="16dp"
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="#343434"

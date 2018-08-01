@@ -56,11 +56,16 @@ android {
 //        jindingjihua{
 //            applicationId = "com.ghf.jindingjihua"
 //        }
-        taiyangcheng{
-            applicationId = "com.bfd.taiyangcheng"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION:"sensor"
-            ]
+//        taiyangcheng{
+//            applicationId = "com.bfd.taiyangcheng"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor"
+//            ]
+//        }
+
+//        --------------
+        weinisiren{
+            applicationId = "com.ghf.weinisiren"
         }
 
     }

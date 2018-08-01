@@ -63,10 +63,11 @@ android {
 //            ]
 //        }
 
-//        --------------
+//        --------------张
         weinisiren{
             applicationId = "com.ghf.weinisiren"
         }
+//      -----------f蜂鸟
 
     }
 }

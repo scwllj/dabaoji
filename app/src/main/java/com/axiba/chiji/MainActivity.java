@@ -41,6 +41,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -54,9 +55,9 @@ import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private AppCompatTextView refresh, home, back, forward, clear;
+    private AppCompatTextView refresh, home, back, forward, clear ,phone_mode,online_server,professional_page;
     private AppCompatImageView refreshImg, homeImg, backImg, clearImg, forwardImg;
-    private LinearLayout refreshLayout, homeLayout, backLayout, clearLayout, errorNotice, forwardLayout;
+    private LinearLayout refreshLayout, homeLayout, backLayout, clearLayout, errorNotice, forwardLayout,contact_us;
     private DrawerLayout drawerLayout;
     private WebView myWebview;
     private RelativeLayout sliderContent, topNavigation;
@@ -96,6 +97,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (forward != null) forward.setOnClickListener(this);
         clear = findViewById(R.id.clear);
         if (clear != null) clear.setOnClickListener(this);
+
+        contact_us = findViewById(R.id.contact_us);
+        if (contact_us != null) contact_us.setOnClickListener(this);
+        phone_mode = findViewById(R.id.phone_mode);
+        if (phone_mode != null) phone_mode.setOnClickListener(this);
+        online_server = findViewById(R.id.online_server);
+        if (online_server != null) online_server.setOnClickListener(this);
+        professional_page = findViewById(R.id.professional_page);
+        if (professional_page != null) professional_page.setOnClickListener(this);
+
 
         refreshImg = findViewById(R.id.refresh_img);
         if (refreshImg != null) refreshImg.setOnClickListener(this);
@@ -523,7 +534,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v == home || v == homeLayout || v == homeImg) {
-            myWebview.loadUrl(Constant.HOME_URL);
+//            myWebview.loadUrl(Constant.HOME_URL);
+            showContactUsMenu(v);
         } else if (v == refresh || v == refreshLayout || v == refreshImg) {
             myWebview.reload();
         } else if (v == back || v == backLayout || v == backImg) {
@@ -538,7 +550,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             clearCache();
         } else if (v == errorNotice) {
             myWebview.reload();
+        }   else if (v == contact_us) {
+            showContactUsMenu(v);
         }
+    }
+
+    void showContactUsMenu(View view){
+        PopupMenu popupMenu = new PopupMenu(this,view);
+        popupMenu.getMenuInflater().inflate(0,popupMenu.getMenu());
+        popupMenu.show();
     }
 
     private void clearCache() {

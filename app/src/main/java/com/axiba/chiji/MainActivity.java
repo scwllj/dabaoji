@@ -23,9 +23,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.PopupMenu;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.DownloadListener;
@@ -41,7 +45,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -55,9 +58,9 @@ import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private AppCompatTextView refresh, home, back, forward, clear ,phone_mode,online_server,professional_page;
+    private AppCompatTextView refresh, home, back, forward, clear, phone_mode, online_server, professional_page;
     private AppCompatImageView refreshImg, homeImg, backImg, clearImg, forwardImg;
-    private LinearLayout refreshLayout, homeLayout, backLayout, clearLayout, errorNotice, forwardLayout,contact_us;
+    private LinearLayout refreshLayout, homeLayout, backLayout, clearLayout, errorNotice, forwardLayout, contact_us;
     private DrawerLayout drawerLayout;
     private WebView myWebview;
     private RelativeLayout sliderContent, topNavigation;
@@ -79,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FrameLayout fullScreenVedio;
 
     private boolean errorLoaded;
+    private PopupMenu popupMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -351,11 +355,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
                 super.onReceivedHttpError(view, request, errorResponse);
-                LogUtil.d("MainActivity","---onReceivedHttpError__"+request.getUrl()+"__"+errorResponse.getStatusCode());
                 if (errorResponse.getStatusCode() == 404 && request.getUrl().toString().equals(Constant.START_URL)) {
                     errorNotice.setVisibility(View.VISIBLE);
                     errorLoaded = true;
-                }else if (errorResponse.getStatusCode() == 500){
+                } else if (errorResponse.getStatusCode() == 500) {
                     errorNotice.setVisibility(View.VISIBLE);
                     errorLoaded = true;
                 }
@@ -365,7 +368,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                LogUtil.d("MainActivity", "---onReceivedError" + error.getErrorCode());
                 if (error.getErrorCode() == -2) {
                     errorNotice.setVisibility(View.VISIBLE);
                     errorLoaded = true;
@@ -534,8 +536,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v == home || v == homeLayout || v == homeImg) {
-//            myWebview.loadUrl(Constant.HOME_URL);
-            showContactUsMenu(v);
+            myWebview.loadUrl(Constant.HOME_URL);
         } else if (v == refresh || v == refreshLayout || v == refreshImg) {
             myWebview.reload();
         } else if (v == back || v == backLayout || v == backImg) {
@@ -550,14 +551,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             clearCache();
         } else if (v == errorNotice) {
             myWebview.reload();
-        }   else if (v == contact_us) {
+        } else if (v == contact_us) {
             showContactUsMenu(v);
         }
     }
 
-    void showContactUsMenu(View view){
-        PopupMenu popupMenu = new PopupMenu(this,view);
-        popupMenu.getMenuInflater().inflate(0,popupMenu.getMenu());
+    void showContactUsMenu(View view) {
+        if (popupMenu == null) {
+            popupMenu = new PopupMenu(this, view);
+            Menu menu = popupMenu.getMenu();
+            for (int i = 0; i < Constant.popMenu.length; i++) {
+                menu.add(android.view.Menu.NONE, android.view.Menu.FIRST + i - 1, i, Constant.popMenu[i][0]);
+            }
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    myWebview.loadUrl(Constant.popMenu[item.getItemId()][1]);
+                    return false;
+                }
+            });
+        }
         popupMenu.show();
     }
 

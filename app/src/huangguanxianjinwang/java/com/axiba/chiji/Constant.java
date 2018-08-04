@@ -1,5 +1,8 @@
 package com.axiba.chiji;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Constant {
     public static final String START_URL = "http://43.249.204.90:83";
     public static final String HOME_URL = "http://43.249.204.90:83";
@@ -15,7 +18,10 @@ public class Constant {
     public static final boolean SHOW_LOADING = false;
     public static final boolean CAN_GOBACK = true;
     public static final boolean NEED_CACHE = true;
-    public static final String[][] popMenu = {{"主页", "http://43.249.204.90:85"},
-                                              {"手机版", "http://43.249.204.90:86"},
-                                              {"在线客服", "http://43.249.204.90:87"}};
+    public static final Map<String,String> popMenu = new HashMap<>();
+    static {
+        popMenu.put("主页","http://43.249.204.90:85");
+        popMenu.put("手机版", "http://43.249.204.90:86");
+        popMenu.put("在线客服", "http://43.249.204.90:87");
+        }
 }

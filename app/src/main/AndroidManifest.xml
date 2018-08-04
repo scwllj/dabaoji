@@ -21,6 +21,30 @@
         <activity android:name=".Loading">
             <intent-filter><data android:host="loading"/><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
         </activity>
+
+        <receiver
+            android:name=".receiver.MyJpushReceiver"
+            android:enabled="true">
+            <intent-filter>
+
+                <!-- 新的tag/alias接口结果返回需要开发者配置一个自定的广播 -->
+                <!-- 该广播需要继承JPush提供的JPushMessageReceiver类, 并如下新增一个 Intent-Filter -->
+                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
+                <!-- Required 用户注册SDK的intent -->
+                <action android:name="cn.jpush.android.intent.REGISTRATION" />
+                <!-- Required 用户接收SDK消息的intent -->
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
+                <!-- Required 用户接收SDK通知栏信息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
+                <!-- Required 用户打开自定义通知栏的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+                <!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <action android:name="cn.jpush.android.intent.CONNECTION" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/><!--开机广播-->
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/><!--网络状态改变广播-->
+                <category android:name="com.abc.pingmingyingyuan" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

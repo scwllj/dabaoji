@@ -557,20 +557,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void showContactUsMenu(View view) {
-        if (popupMenu == null) {
+//        if (popupMenu == null) {
             popupMenu = new PopupMenu(this, view);
-            Menu menu = popupMenu.getMenu();
-            for (int i = 0; i < Constant.popMenu.length; i++) {
-                menu.add(android.view.Menu.NONE, android.view.Menu.FIRST + i - 1, i, Constant.popMenu[i][0]);
-            }
+        //填充菜单
+        popupMenu.getMenuInflater().inflate(R.menu.popmenu, popupMenu.getMenu());
+//            Menu menu = popupMenu.getMenu();
+//            for (int i = 0; i < Constant.popMenu.length; i++) {
+//                menu.add(android.view.Menu.NONE, android.view.Menu.FIRST + i - 1, i, Constant.popMenu[i][0]);
+//            }
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    myWebview.loadUrl(Constant.popMenu[item.getItemId()][1]);
+                    myWebview.loadUrl(Constant.popMenu.get(item.getTitle()));
                     return false;
                 }
             });
-        }
+//        }
         popupMenu.show();
     }
 

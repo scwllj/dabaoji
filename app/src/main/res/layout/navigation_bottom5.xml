@@ -16,7 +16,7 @@
             android:layout_height="22dp"
             android:tint="@color/tint"
             android:layout_centerInParent="true"
-            android:src="@drawable/home"/>
+            android:src="@drawable/contact_us"/>
         <android.support.v7.widget.AppCompatTextView
             android:layout_marginTop="1dp"
             android:layout_width="wrap_content"

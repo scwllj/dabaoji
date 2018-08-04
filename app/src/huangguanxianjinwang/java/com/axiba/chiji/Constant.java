@@ -8,6 +8,7 @@ public class Constant {
     public static final boolean PULL_REFRESH = false;
     public static final boolean SHOW_PROGRESSBAR = true;
     public static final boolean OUTER_WEB = false;
+    public static final boolean SCALED = true;
     public static final boolean FLOAT_MENU = false;
 
     public static final boolean NEED_GUIDE = false;

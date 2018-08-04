@@ -40,15 +40,20 @@ android {
     }
 
     productFlavors {
-        zztest{
-            applicationId = "com.app.zztest"
-        }
+//        zztest{
+//            applicationId = "com.app.zztest"
+//        }
 //        --------------张
 //        weinisiren{
 //            applicationId = "com.ghf.weinisiren"
 //        }
 //      -----------f蜂鸟
-
+        huangguanxianjinwang{
+            applicationId = "com.ba.huangguanxianjinwang"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION:"sensor"
+            ]
+        }
     }
 }
 

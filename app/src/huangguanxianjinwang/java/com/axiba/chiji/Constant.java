@@ -1,11 +1,13 @@
 package com.axiba.chiji;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Constant {
-    public static final String START_URL = "http://43.249.204.90:83";
-    public static final String HOME_URL = "http://43.249.204.90:83";
+    public static final String START_URL = "http://43.249.204.90:8011";
+    public static final String HOME_URL = "http://43.249.204.90:8011";
     public static final String NAVIGATION = "R.layout.navigation_layout";
 
     public static final boolean PULL_REFRESH = false;
@@ -18,10 +20,10 @@ public class Constant {
     public static final boolean SHOW_LOADING = false;
     public static final boolean CAN_GOBACK = true;
     public static final boolean NEED_CACHE = true;
-    public static final Map<String,String> popMenu = new HashMap<>();
+    public static final List<PopView.Menu> popMenu = new ArrayList<>();
     static {
-        popMenu.put("主页","http://43.249.204.90:85");
-        popMenu.put("手机版", "http://43.249.204.90:86");
-        popMenu.put("在线客服", "http://43.249.204.90:87");
+        popMenu.add(new PopView.Menu("主页","http://43.249.204.90:85"));
+        popMenu.add(new PopView.Menu("手机版", "http://43.249.204.90:86"));
+        popMenu.add(new PopView.Menu("在线客服", "http://43.249.204.90:87"));
         }
 }

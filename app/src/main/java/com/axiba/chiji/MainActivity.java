@@ -552,28 +552,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v == errorNotice) {
             myWebview.reload();
         } else if (v == contact_us) {
-            showContactUsMenu(v);
+            showPopMenu(v);
         }
     }
 
-    void showContactUsMenu(View view) {
+    void showPopMenu(View view) {
 //        if (popupMenu == null) {
-            popupMenu = new PopupMenu(this, view);
-        //填充菜单
-        popupMenu.getMenuInflater().inflate(R.menu.popmenu, popupMenu.getMenu());
+//            popupMenu = new PopupMenu(this, view);
+//        //填充菜单
 //            Menu menu = popupMenu.getMenu();
-//            for (int i = 0; i < Constant.popMenu.length; i++) {
-//                menu.add(android.view.Menu.NONE, android.view.Menu.FIRST + i - 1, i, Constant.popMenu[i][0]);
+//            for (int i = 0; i < Constant.popMenu.size(); i++) {
+//                menu.add(android.view.Menu.NONE, android.view.Menu.FIRST + i - 1, i, Constant.popMenu.get(i).getName());
 //            }
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    myWebview.loadUrl(Constant.popMenu.get(item.getTitle()));
-                    return false;
-                }
-            });
+//            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                @Override
+//                public boolean onMenuItemClick(MenuItem item) {
+//
+//                    myWebview.loadUrl(Constant.popMenu.get(item.getItemId()).getValue());
+//                    return false;
+//                }
+//            });
 //        }
-        popupMenu.show();
+//        popupMenu.show();
+        PopView popView = new PopView(this,view);
+        popView.setData(Constant.popMenu);
+        popView.setOnItemClickListener(new PopView.OnItemClickListener() {
+            @Override
+            public void onItemClick(PopView.Menu menu) {
+                myWebview.loadUrl(menu.getValue());
+            }
+        });
+        popView.show();
     }
 
     private void clearCache() {

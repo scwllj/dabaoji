@@ -1,12 +1,16 @@
 package com.axiba.chiji;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +26,14 @@ public class PopView extends FrameLayout {
     private View anchorView;
     private RecyclerView recyclerView;
     private MenuAdapter menuAdapter;
+    private FrameLayout contentParent;
+    private int cellHeight = 30;
+    private int screenWidth,screenHeight;
+    private int cellWidth = 100;
+    private final int HORIZONTAL_MIN = 40;
+    private float density;
+
+
 
     public PopView(@NonNull Context context) {
         super(context);
@@ -30,6 +42,8 @@ public class PopView extends FrameLayout {
     public PopView(@NonNull Context context,View anchorView) {
         this(context);
         this.anchorView = anchorView;
+        contentParent =
+                (FrameLayout) anchorView.getRootView().findViewById(android.R.id.content);
         createPopWindow();
     }
 
@@ -42,35 +56,94 @@ public class PopView extends FrameLayout {
     }
 
     private void createPopWindow(){
-        this.setBackgroundColor(Color.TRANSPARENT);
-        this.setOnClickListener(null);
+        this.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        DisplayMetrics dm = new DisplayMetrics();
+        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels;
+        density = dm.density;
+
+        cellHeight = Math.round(density*cellHeight);
+        cellWidth = Math.round(density*cellWidth);
+
         recyclerView = new RecyclerView(getContext());
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),RecyclerView.HORIZONTAL,false);
+        recyclerView.setBackgroundColor(Color.GREEN);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setPadding(0,Math.round(10*density),0,Math.round(30*density));
+        menuAdapter = new MenuAdapter();
         recyclerView.setAdapter(menuAdapter);
-        addView(recyclerView);
+        recyclerView.setBackgroundResource(R.drawable.pop_bg);
+        addView(recyclerView,new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public void setData(List<Map<String, Object>> data){
+    public void setData(List<Menu> data){
+        if(data == null || data.size()==0){
+            return;
+        }
+        int []anchorViewPoint = new int[2];
+        anchorView.getLocationOnScreen(anchorViewPoint);
+        int anchorWidth = anchorView.getMeasuredWidth();
+        int anchorHeight = anchorView.getMeasuredHeight();
+
+        LayoutParams params = (FrameLayout.LayoutParams)recyclerView.getLayoutParams();
+
+        int allHeight = cellHeight * data.size()+Math.round(40*density);
+
+        if(anchorViewPoint[1] + anchorHeight + allHeight > screenHeight){
+            params.gravity = Gravity.BOTTOM;
+            params.bottomMargin = screenHeight-anchorViewPoint[1]+20;
+        }else {
+            params.topMargin = anchorViewPoint[1] + anchorHeight + HORIZONTAL_MIN;
+        }
+        if(anchorViewPoint[0] < HORIZONTAL_MIN || anchorViewPoint[0] + anchorWidth/2 < cellWidth/2){
+            params.leftMargin = HORIZONTAL_MIN;
+        }else if (anchorViewPoint[0] + cellWidth > screenWidth){
+            params.gravity = params.gravity | Gravity.RIGHT;
+            params.rightMargin = HORIZONTAL_MIN;
+        }else {
+            params.leftMargin = anchorViewPoint[0] + anchorWidth/2 - cellWidth/2;
+        }
+        params.height = allHeight;
+        params.width = cellWidth;
+
+        recyclerView.setLayoutParams(params);
         menuAdapter.setData(data);
+
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-       menuAdapter.setOnItemClickListener(onItemClickListener);
+    public void dismiss(){
+        contentParent.removeView(this);
+    }
+
+    public void setOnItemClickListener(final OnItemClickListener onItemClickListener) {
+       menuAdapter.setOnItemClickListener(new OnItemClickListener() {
+           @Override
+           public void onItemClick(Menu menu) {
+               onItemClickListener.onItemClick(menu);
+               dismiss();
+           }
+       });
     }
 
     public void show(){
-        WindowManager windowManager = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
-        windowManager.addView(this,new WindowManager.LayoutParams());
+        contentParent.addView(this,new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
     }
 
     public interface OnItemClickListener{
-        void onItemClick(String key,Object value);
+        void onItemClick(Menu menu);
     }
 
     private static class MenuAdapter extends RecyclerView.Adapter<MenuHolder> {
 
-        List<Map<String, Object>> data;
+        List<Menu> data;
         private OnItemClickListener onItemClickListener;
 
         @NonNull
@@ -82,7 +155,17 @@ public class PopView extends FrameLayout {
 
         @Override
         public void onBindViewHolder(@NonNull MenuHolder holder, int position) {
-//            holder
+            holder.menuTextView.setText(data.get(position).getName());
+            holder.menuTextView.setTag(data.get(position));
+            holder.menuTextView.setHeight(100);
+            holder.menuTextView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Menu menu = (Menu) v.getTag();
+                    onItemClickListener.onItemClick(menu);
+
+                }
+            });
         }
 
         @Override
@@ -90,7 +173,7 @@ public class PopView extends FrameLayout {
             return data==null?0:data.size();
         }
 
-        public void setData(List<Map<String, Object>> data) {
+        public void setData(List<Menu> data) {
             this.data = data;
             notifyDataSetChanged();
         }
@@ -100,7 +183,7 @@ public class PopView extends FrameLayout {
         }
 
         protected View getView(ViewGroup parent, int layoutId) {
-            return LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
+            return LayoutInflater.from(parent.getContext()).inflate(layoutId, null, false);
         }
     }
 
@@ -109,7 +192,33 @@ public class PopView extends FrameLayout {
         private TextView menuTextView;
         public MenuHolder(View itemView) {
             super(itemView);
-            menuTextView = itemView.findViewById(R.layout.menu_adapter);
+            menuTextView = itemView.findViewById(R.id.pop_menu_name);
+        }
+    }
+
+    public static class Menu<T>{
+        private String name;
+        private String value;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Menu(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 }

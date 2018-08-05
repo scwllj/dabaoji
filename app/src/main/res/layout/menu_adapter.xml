@@ -3,7 +3,8 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/pop_menu_nam"
+        android:id="@+id/pop_menu_name"
+        android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:gravity="center"

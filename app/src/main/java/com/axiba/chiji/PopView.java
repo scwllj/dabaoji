@@ -193,7 +193,7 @@ public class PopView extends FrameLayout {
         public void onBindViewHolder(@NonNull MenuHolder holder, int position) {
             holder.menuTextView.setText(data.get(position).getName());
             holder.menuTextView.setTag(data.get(position));
-            holder.menuTextView.setHeight(100);
+            holder.divider.setVisibility(position == data.size()-1?INVISIBLE:VISIBLE);
             holder.menuTextView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -226,9 +226,11 @@ public class PopView extends FrameLayout {
     private static class MenuHolder extends RecyclerView.ViewHolder{
 
         private TextView menuTextView;
+        private View divider;
         public MenuHolder(View itemView) {
             super(itemView);
             menuTextView = itemView.findViewById(R.id.pop_menu_name);
+            divider = itemView.findViewById(R.id.divider);
         }
     }
 

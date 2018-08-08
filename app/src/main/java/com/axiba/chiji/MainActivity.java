@@ -249,13 +249,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 LogUtil.d("MainActivity", "---shouldOverrideUrlLoading:" + url);
-                if (Constant.outerLink.length > 0) {
-                    for (int i = 0; i < Constant.outerLink.length; i++) {
-                        if(Constant.outerLink[i].equals(url)){
-                            openSystemBrower(url);
-                            return true;
-                        }
-                    }
+                if (Constant.outerLink != null && Constant.outerLink.get(url) != null) {
+                    openSystemBrower(Constant.outerLink.get(url));
+                    return true;
                 }
                 try {
                     if (url.toLowerCase().startsWith("about:blank")) {
@@ -555,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void showPopMenu(View view) {
-        PopView popView = new PopView(this,view);
+        PopView popView = new PopView(this, view);
         popView.setData(Constant.popMenu);
         popView.setOnItemClickListener(new PopView.OnItemClickListener() {
             @Override

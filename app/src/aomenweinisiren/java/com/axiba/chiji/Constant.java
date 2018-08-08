@@ -21,17 +21,18 @@ public class Constant {
     public static final boolean CAN_GOBACK = true;
     public static final boolean NEED_CACHE = true;
     public static final List<PopView.Menu> popMenu = new ArrayList<>();
+    public static final Map<String, String> outerLink = new HashMap<>();
 
     static {
         popMenu.add(new PopView.Menu("主页", "http://43.249.204.90:85"));
         popMenu.add(new PopView.Menu("手机版", "http://43.249.204.90:86"));
         popMenu.add(new PopView.Menu("在线客服", "http://43.249.204.90:8011"));
+
+        outerLink.put("https://33382rr.com/", "http://222.186.30.220:801");
+        outerLink.put("https://33382bb.com/", "http://222.186.30.220:802");
+        outerLink.put("https://33382qq.com/", "http://222.186.30.220:803");
+        outerLink.put("https://33382cc.com/", "http://222.186.30.220:804");
+        outerLink.put("https://33382ii.com/", "http://222.186.30.220:805");
     }
 
-    public static final String[] outerLink = {"http://222.186.30.220:801",
-                                            "http://222.186.30.220:802",
-                                            "http://222.186.30.220:803",
-                                            "http://222.186.30.220:804",
-                                            "http://222.186.30.220:805"
-    };
 }

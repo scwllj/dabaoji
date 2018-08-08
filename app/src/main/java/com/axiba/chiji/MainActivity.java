@@ -249,15 +249,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 LogUtil.d("MainActivity", "---shouldOverrideUrlLoading:" + url);
-                if (Constant.OUTER_WEB) {
-                    String yuming = Constant.HOME_URL.split("/")[2];
-                    if (url.contains(yuming)) {
-                        return super.shouldOverrideUrlLoading(view, url);
+                if (Constant.outerLink.length > 0) {
+                    for (int i = 0; i < Constant.outerLink.length; i++) {
+                        if(Constant.outerLink[i].equals(url)){
+                            openSystemBrower(url);
+                            return true;
+                        }
                     }
-                    /*直接跳系统浏览器 */
-                    openSystemBrower(url);
-                    return true;
-                    /*---------*/
                 }
                 try {
                     if (url.toLowerCase().startsWith("about:blank")) {
@@ -557,23 +555,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void showPopMenu(View view) {
-//        if (popupMenu == null) {
-//            popupMenu = new PopupMenu(this, view);
-//        //填充菜单
-//            Menu menu = popupMenu.getMenu();
-//            for (int i = 0; i < Constant.popMenu.size(); i++) {
-//                menu.add(android.view.Menu.NONE, android.view.Menu.FIRST + i - 1, i, Constant.popMenu.get(i).getName());
-//            }
-//            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                @Override
-//                public boolean onMenuItemClick(MenuItem item) {
-//
-//                    myWebview.loadUrl(Constant.popMenu.get(item.getItemId()).getValue());
-//                    return false;
-//                }
-//            });
-//        }
-//        popupMenu.show();
         PopView popView = new PopView(this,view);
         popView.setData(Constant.popMenu);
         popView.setOnItemClickListener(new PopView.OnItemClickListener() {

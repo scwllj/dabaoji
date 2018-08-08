@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Constant {
-    public static final String START_URL = "http://43.249.204.90:8011";
-    public static final String HOME_URL = "http://43.249.204.90:8011";
+    public static final String START_URL = "http://43.249.204.90:83";
+    public static final String HOME_URL = "http://43.249.204.90:83";
     public static final String NAVIGATION = "R.layout.navigation_layout";
 
     public static final boolean PULL_REFRESH = false;
@@ -24,6 +24,6 @@ public class Constant {
     static {
         popMenu.add(new PopView.Menu("主页","http://43.249.204.90:85"));
         popMenu.add(new PopView.Menu("手机版", "http://43.249.204.90:86"));
-        popMenu.add(new PopView.Menu("在线客服", "http://43.249.204.90:87"));
+        popMenu.add(new PopView.Menu("在线客服", "http://43.249.204.90:8011"));
         }
 }

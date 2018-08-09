@@ -2,6 +2,8 @@ package com.axiba.chiji;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -19,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -36,6 +40,7 @@ public class PopView extends FrameLayout {
     private int screenWidth,screenHeight;
     private int cellWidth = 100;
     private final int HORIZONTAL_MIN = 40;
+    private boolean bottomLocated;
     private float density;
     private int allHeight;
 
@@ -115,6 +120,7 @@ public class PopView extends FrameLayout {
 
         if(anchorViewPoint[1] + anchorHeight + allHeight > screenHeight){
             params.gravity = Gravity.BOTTOM;
+            bottomLocated = true;
             params.bottomMargin = screenHeight-anchorViewPoint[1]+10;
         }else {
             params.topMargin = anchorViewPoint[1] + anchorHeight + HORIZONTAL_MIN;
@@ -136,26 +142,37 @@ public class PopView extends FrameLayout {
     }
 
     public void dismiss(){
-        ValueAnimator animator = ValueAnimator.ofFloat(1,0);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Float value = (Float) animation.getAnimatedValue();
-                recyclerView.setAlpha(value);
-                recyclerView.setScaleX(value);
-                recyclerView.setScaleY(value);
-            }
-        });
-        animator.setDuration(150);
+        startAnimal(false);
+    }
+
+    public void show(){
+        contentParent.addView(this,new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        startAnimal(true);
+    }
+
+    void startAnimal(final boolean show){
+        float fromF = 0;
+        float toF = 1.0f;
+        if(!show){
+            fromF = 1.0f;
+            toF = 0f;
+        }
+        if(bottomLocated){
+            recyclerView.setPivotY(allHeight);
+        }
+        PropertyValuesHolder scaleYHolder = PropertyValuesHolder.ofFloat("scaleY", fromF,toF);
+        PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofFloat("alpha", fromF,toF);
+        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(recyclerView,scaleYHolder,alphaHolder).setDuration(150);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                contentParent.removeView(PopView.this);
+                if(!show){
+                    contentParent.removeView(PopView.this);
+                }
             }
         });
         animator.start();
-
     }
 
     public void setOnItemClickListener(final OnItemClickListener onItemClickListener) {
@@ -168,21 +185,7 @@ public class PopView extends FrameLayout {
        });
     }
 
-    public void show(){
-        contentParent.addView(this,new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ValueAnimator animator = ValueAnimator.ofFloat(0,1);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Float value = (Float) animation.getAnimatedValue();
-                recyclerView.setAlpha(value);
-                recyclerView.setScaleX(value);
-                recyclerView.setScaleY(value);
-            }
-        });
-        animator.setDuration(150);
-        animator.start();
-    }
+
 
     public interface OnItemClickListener{
         void onItemClick(Menu menu);

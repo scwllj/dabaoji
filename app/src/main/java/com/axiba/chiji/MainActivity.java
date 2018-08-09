@@ -529,6 +529,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+
         if (v == home || v == homeLayout || v == homeImg) {
             myWebview.loadUrl(Constant.HOME_URL);
         } else if (v == refresh || v == refreshLayout || v == refreshImg) {

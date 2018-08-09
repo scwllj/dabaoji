@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Constant {
+public class Constant extends BaseConstant{
     public static final String START_URL = "http://103.41.66.194:8011";
     public static final String HOME_URL = "http://103.41.66.194:8011";
     public static final String NAVIGATION = "R.layout.navigation_layout";
@@ -21,6 +21,8 @@ public class Constant {
     public static final boolean CAN_GOBACK = true;
     public static final boolean NEED_CACHE = true;
     public static final List<PopView.Menu> popMenu = new ArrayList<>();
+    public static final Map<String, String> outerLink = new HashMap<>();
+
     static {
         popMenu.add(new PopView.Menu("主页","http://43.249.204.90:85"));
         popMenu.add(new PopView.Menu("手机版", "http://43.249.204.90:86"));

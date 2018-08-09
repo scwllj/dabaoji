@@ -21,6 +21,7 @@ public class Constant {
     public static final boolean CAN_GOBACK = true;
     public static final boolean NEED_CACHE = true;
     public static final List<PopView.Menu> popMenu = new ArrayList<>();
+    public static final Map<String, String> outerLink = new HashMap<>();
     static {
         popMenu.add(new PopView.Menu("主页","http://43.249.204.90:85"));
         popMenu.add(new PopView.Menu("手机版", "http://43.249.204.90:86"));

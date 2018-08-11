@@ -48,15 +48,15 @@ android {
 //            applicationId = "com.ghf.weinisiren"
 //        }
 //      -----------f蜂鸟
-        huangguanxianjinwang{
-            applicationId = "com.ba.huangguanxianjinwang"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION:"sensor",
-                    JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "f8ba27cdab54031eedb8ce9b", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-            ]
-        }
+//        huangguanxianjinwang{
+//            applicationId = "com.ba.huangguanxianjinwang"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "f8ba27cdab54031eedb8ce9b", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
 
 //        lingyiliaotianshi{
 //            applicationId = "com.va.lingyiliaotianshi"
@@ -76,6 +76,16 @@ android {
 //                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
+
+        lianboguoji{
+            applicationId = "com.bac.lianboguoji"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION:"sensor",
+                    JPUSH_PKGNAME : applicationId,
+                    JPUSH_APPKEY : "5bb577e01a43615f9bbfa4e0", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+            ]
+        }
     }
 }
 

@@ -31,14 +31,9 @@
                 android:layout_height="match_parent" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#333333"
-            android:layout_above="@+id/bottom_navi"/>
         <include
             android:id="@+id/bottom_navi"
-            layout="@layout/navigation_bottom"
+            layout="@layout/navigation_bottom4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"/>

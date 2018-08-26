@@ -10,6 +10,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -29,36 +30,31 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.DownloadListener;
+import android.webkit.JsResult;
+import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
-import com.tencent.smtt.export.external.interfaces.JsResult;
-import com.tencent.smtt.export.external.interfaces.SslError;
-import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
-import com.tencent.smtt.export.external.interfaces.WebResourceError;
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
-import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
-import com.tencent.smtt.sdk.DownloadListener;
-import com.tencent.smtt.sdk.QbSdk;
-import com.tencent.smtt.sdk.ValueCallback;
-import com.tencent.smtt.sdk.WebChromeClient;
-import com.tencent.smtt.sdk.WebSettings;
-import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
-
 import java.io.File;
 
-import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_DEFAULT;
-import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_NO_CACHE;
-import static com.tencent.smtt.export.external.interfaces.IX5WebViewBase.HitTestResult.IMAGE_TYPE;
-import static com.tencent.smtt.export.external.interfaces.IX5WebViewBase.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
+import static android.webkit.WebSettings.LOAD_DEFAULT;
+import static android.webkit.WebSettings.LOAD_NO_CACHE;
+import static android.webkit.WebView.HitTestResult.IMAGE_TYPE;
+import static android.webkit.WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 
-
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivitySystem extends AppCompatActivity implements View.OnClickListener {
 
     private AppCompatTextView refresh, home, back, forward, clear, phone_mode, online_server, professional_page;
     private AppCompatImageView refreshImg, homeImg, backImg, clearImg, forwardImg;
@@ -71,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private boolean showProgressBar;
-    private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE","android.permission.READ_PHONE_STATE"};
+    private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"};
 
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessage5;
@@ -80,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int CODE_UPLOAD_FILE_MULT = 11;
 
     private View xCustomView;
-    private IX5WebChromeClient.CustomViewCallback xCustomViewCallback;
+    private WebChromeClient.CustomViewCallback xCustomViewCallback;
     private FrameLayout fullScreenVedio;
 
     private boolean errorLoaded;
@@ -158,21 +154,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myWebview.loadUrl(Constant.START_URL);
         initByConfig();
         initWebview();
-//        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
+        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, 1);
-//        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        QbSdk.initX5Environment(this.getApplicationContext(),null);
+        }
     }
 
     private void initByConfig() {
         progressBar.setMax(100);
         showProgressBar = Constant.SHOW_PROGRESSBAR;
-        progressBar.setVisibility(showProgressBar?View.VISIBLE:View.INVISIBLE);
 
         swipeRefreshLayout.setEnabled(Constant.PULL_REFRESH);
         if (Constant.PULL_REFRESH) {
@@ -222,23 +211,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onLongClick(View v) {
                 final WebView.HitTestResult result = myWebview.getHitTestResult();
                 if ((result.getType() == IMAGE_TYPE) || (result.getType() == SRC_IMAGE_ANCHOR_TYPE)) {
-                    instance.runOnUiThread(new Runnable() {
+                    MainActivitySystem.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            new AlertDialog.Builder(instance).setMessage("保存图片到相册?")
+                            new AlertDialog.Builder(MainActivitySystem.this).setMessage("保存图片到相册?")
                                     .setNegativeButton("暂不", null)
                                     .setPositiveButton("保存", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            if (ActivityCompat.checkSelfPermission(instance, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
-                                                ActivityCompat.requestPermissions(instance, MainActivity.PERMISSIONS_STORAGE, 1);
+                                            if (ActivityCompat.checkSelfPermission(MainActivitySystem.this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
+                                                ActivityCompat.requestPermissions(MainActivitySystem.this, MainActivitySystem.PERMISSIONS_STORAGE, 1);
                                                 return;
                                             }
                                             if (result.getExtra().startsWith("http")) {
-                                                FileUtils.savePicture(instance, "" + System.currentTimeMillis(), result.getExtra());
+                                                FileUtils.savePicture(MainActivitySystem.this, "" + System.currentTimeMillis(), result.getExtra());
                                             } else {
                                                 byte[] mBitmap = Base64.decode(result.getExtra(), Base64.DEFAULT);
-                                                FileUtils.savaFileToSD(instance, "" + System.currentTimeMillis(), mBitmap);
+                                                FileUtils.savaFileToSD(MainActivitySystem.this, "" + System.currentTimeMillis(), mBitmap);
 //                            Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
                                             }
                                         }
@@ -253,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myWebview.setDownloadListener(new DownloadListener() {
             public void onDownloadStart(String paramAnonymousString1, String paramAnonymousString2, String paramAnonymousString3, String paramAnonymousString4, long paramAnonymousLong) {
                 Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(paramAnonymousString1));
-                instance.startActivity(intent);
+                MainActivitySystem.this.startActivity(intent);
             }
         });
         myWebview.setWebViewClient(new WebViewClient() {
@@ -292,11 +281,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
 
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-//                LogUtil.d("MainActivity", "---shouldOverrideUrlLoading:" + request);
-//                return super.shouldOverrideUrlLoading(view, request);
-//            }
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                LogUtil.d("MainActivity", "---shouldOverrideUrlLoading:" + request);
+                return super.shouldOverrideUrlLoading(view, request);
+            }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -313,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 if (!url.toLowerCase().contains(Constant.HOME_URL)) { //过滤广告
-                    if (!hasAd(instance, url)) {
+                    if (!hasAd(MainActivitySystem.this, url)) {
                         return super.shouldInterceptRequest(view, url);
                     } else {
                         return new WebResourceResponse(null, null, null);
@@ -329,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
                 if (!url.toLowerCase().contains(Constant.HOME_URL)) { //过滤广告
-                    if (!hasAd(instance, url)) {
+                    if (!hasAd(MainActivitySystem.this, url)) {
                         return super.shouldInterceptRequest(view, request);
                     } else {
                         return new WebResourceResponse(null, null, null);
@@ -341,9 +330,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
-//                super.onReceivedSslError(webView, sslErrorHandler, sslError);
                 sslErrorHandler.proceed();
             }
+
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -406,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void onShowCustomView(View view, IX5WebChromeClient.CustomViewCallback callback) {
+            public void onShowCustomView(View view, CustomViewCallback callback) {
                 super.onShowCustomView(view, callback);
                 LogUtil.d("MainActivity", "---onShowCustomView");
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -430,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-                new AlertDialog.Builder(instance).setMessage(message).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(MainActivitySystem.this).setMessage(message).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         result.confirm();
@@ -441,13 +430,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @TargetApi(21)
             public boolean onShowFileChooser(WebView paramAnonymousWebView, ValueCallback<Uri[]> paramAnonymousValueCallback, FileChooserParams paramAnonymousFileChooserParams) {
-                if (mUploadMessage5 != null) {
-                    mUploadMessage5.onReceiveValue(new Uri[]{});
+                if (MainActivitySystem.this.mUploadMessage5 != null) {
+                    MainActivitySystem.this.mUploadMessage5.onReceiveValue(new Uri[]{});
                 }
                 mUploadMessage5 = paramAnonymousValueCallback;
                 Intent intent = paramAnonymousFileChooserParams.createIntent();
                 try {
-                    startActivityForResult(intent, CODE_UPLOAD_FILE_MULT);
+                    MainActivitySystem.this.startActivityForResult(intent, CODE_UPLOAD_FILE_MULT);
                     return true;
                 } catch (ActivityNotFoundException e) {
                     mUploadMessage5.onReceiveValue(new Uri[]{});
@@ -472,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent("android.intent.action.GET_CONTENT");
                 intent.addCategory("android.intent.category.OPENABLE");
                 intent.setType("*/*");
-                startActivityForResult(Intent.createChooser(intent, "File Browser"), CODE_UPLOAD_FILE_SINGLE);
+                MainActivitySystem.this.startActivityForResult(Intent.createChooser(intent, "File Browser"), CODE_UPLOAD_FILE_SINGLE);
             }
         });
     }
@@ -575,13 +564,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void clearCache() {
-        new android.app.AlertDialog.Builder(this).setMessage("确认需要清理缓存？")
+        new android.app.AlertDialog.Builder(MainActivitySystem.this).setMessage("确认需要清理缓存？")
                 .setNegativeButton("取消", null)
                 .setPositiveButton("清理", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         clearWebViewCache();
-                        Toast.makeText(instance, "已成功清理缓存", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivitySystem.this, "已成功清理缓存", Toast.LENGTH_SHORT).show();
                     }
                 }).show();
     }

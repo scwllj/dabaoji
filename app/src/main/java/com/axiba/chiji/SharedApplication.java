@@ -2,11 +2,15 @@ package com.axiba.chiji;
 
 import android.app.Application;
 import android.app.Notification;
+import android.util.Log;
+
+import com.tencent.smtt.sdk.QbSdk;
 
 import cn.jpush.android.api.BasicPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
 
 public class SharedApplication extends Application {
+    private final String TAG = this.getClass().getName();
 
     public static volatile SharedApplication instance;
 
@@ -22,5 +26,24 @@ public class SharedApplication extends Application {
         JPushInterface.setPushNotificationBuilder(1, builder);
         JPushInterface.setDebugMode(BuildConfig.DEBUG);
         JPushInterface.init(this.getApplicationContext());
+        initX5();
+    }
+
+    private void initX5(){
+        if(QbSdk.canLoadX5(this.getApplicationContext())){
+            QbSdk.initX5Environment(this.getApplicationContext(), new QbSdk.PreInitCallback() {
+                @Override
+                public void onCoreInitFinished() {
+                    Log.d(TAG, "onCoreInitFinished: ");
+                }
+
+                @Override
+                public void onViewInitFinished(boolean b) {
+                    Log.d(TAG, "onViewInitFinished: "+b);
+                }
+            });
+        }else {
+            Log.d(TAG, "canLoadX5: false");
+        }
     }
 }

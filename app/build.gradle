@@ -13,6 +13,8 @@ android {
         manifestPlaceholders = [
                 SCREEN_ORIENTATION:"portrait"
         ]
+
+        ndk {abiFilters "armeabi", "armeabi-v7a", "x86", "mips"}
     }
 
 
@@ -40,15 +42,15 @@ android {
     }
 
     productFlavors {
-        zztest{
-            applicationId = "com.app.zztest"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION:"portrait",
-                    JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-            ]
-        }
+//        zztest{
+//            applicationId = "com.app.zztest"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"portrait",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
 //        --------------张
 //        weinisiren{
 //            applicationId = "com.ghf.weinisiren"
@@ -64,6 +66,16 @@ android {
 //                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
+
+        yitaizhuangyuan{
+            applicationId = "com.app.yitaizhuangyuan"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION:"portrait",
+                    JPUSH_PKGNAME : applicationId,
+                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+            ]
+        }
     }
 }
 
@@ -75,4 +87,5 @@ dependencies {
     implementation 'cn.jiguang.sdk:jpush:3.1.1'
     implementation 'cn.jiguang.sdk:jcore:1.1.9'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation files('src/main/libs/tengxunx5.jar')
 }

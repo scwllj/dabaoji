@@ -58,7 +58,7 @@ import static com.tencent.smtt.export.external.interfaces.IX5WebViewBase.HitTest
 import static com.tencent.smtt.export.external.interfaces.IX5WebViewBase.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivityTx extends AppCompatActivity implements View.OnClickListener {
 
     private AppCompatTextView refresh, home, back, forward, clear, phone_mode, online_server, professional_page;
     private AppCompatImageView refreshImg, homeImg, backImg, clearImg, forwardImg;
@@ -172,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initByConfig() {
         progressBar.setMax(100);
         showProgressBar = Constant.SHOW_PROGRESSBAR;
-        progressBar.setVisibility(showProgressBar?View.VISIBLE:View.INVISIBLE);
 
         swipeRefreshLayout.setEnabled(Constant.PULL_REFRESH);
         if (Constant.PULL_REFRESH) {
@@ -231,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             if (ActivityCompat.checkSelfPermission(instance, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
-                                                ActivityCompat.requestPermissions(instance, MainActivity.PERMISSIONS_STORAGE, 1);
+                                                ActivityCompat.requestPermissions(instance, MainActivityTx.PERMISSIONS_STORAGE, 1);
                                                 return;
                                             }
                                             if (result.getExtra().startsWith("http")) {

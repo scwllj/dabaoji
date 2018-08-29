@@ -67,12 +67,21 @@ android {
 //            ]
 //        }
 
-        yitaizhuangyuan{
-            applicationId = "com.app.yitaizhuangyuan"
+//        yitaizhuangyuan{
+//            applicationId = "com.app.yitaizhuangyuan"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"portrait",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+        wufucaipiao{
+            applicationId = "com.dfs.wufucaipiao"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION:"portrait",
                     JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
+                    JPUSH_APPKEY : "d97e0b41c211cbda6532202d", //JPush上注册的包名对应的appkey.
                     JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
             ]
         }

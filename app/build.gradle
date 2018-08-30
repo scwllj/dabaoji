@@ -85,12 +85,21 @@ android {
 //                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-        yinyuzixun{
-            applicationId = "com.hse.yinyuzixun"
+//        yinyuzixun{
+//            applicationId = "com.hse.yinyuzixun"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"portrait",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "1", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+        huimincaipiao{
+            applicationId = "com.hse.huimincaipiao"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION:"portrait",
                     JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "1", //JPush上注册的包名对应的appkey.
+                    JPUSH_APPKEY : "a2c04c7eab6c2ef74adb17ec", //JPush上注册的包名对应的appkey.
                     JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
             ]
         }
@@ -106,4 +115,5 @@ dependencies {
     implementation 'cn.jiguang.sdk:jcore:1.1.9'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation files('src/main/libs/tengxunx5.jar')
+    implementation 'com.google.guava:guava:26.0-android'
 }

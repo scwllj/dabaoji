@@ -124,8 +124,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (backImg != null) backImg.setOnClickListener(this);
         forwardImg = findViewById(R.id.forward_img);
         if (forwardImg != null) forwardImg.setOnClickListener(this);
-        clearImg = findViewById(R.id.clear_img);
-        if (clearImg != null) clearImg.setOnClickListener(this);
 
         refreshLayout = findViewById(R.id.refresh_layout);
         if (refreshLayout != null) refreshLayout.setOnClickListener(this);
@@ -137,6 +135,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (forwardLayout != null) forwardLayout.setOnClickListener(this);
         clearLayout = findViewById(R.id.clear_layout);
         if (clearLayout != null) clearLayout.setOnClickListener(this);
+        clearImg = findViewById(R.id.clear_img);
+        if (clearImg != null) clearImg.setOnClickListener(this);
 
         errorNotice = findViewById(R.id.errorNotice);
         if (errorNotice != null) errorNotice.setOnClickListener(this);

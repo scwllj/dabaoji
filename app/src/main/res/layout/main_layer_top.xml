@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:layout_below="@id/top_navi"
-        android:background="@drawable/top_title_shader" />
+
 
     <LinearLayout
         android:id="@+id/errorNotice"
@@ -44,6 +40,12 @@
         android:layout_height="1dp"
         android:layout_below="@+id/top_navi"
         android:visibility="invisible" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_below="@id/top_navi"
+        android:background="@drawable/top_title_shader" />
+
 
     <FrameLayout
         android:id="@+id/fullScreenVedio"
@@ -60,4 +62,4 @@
             <!--android:layout_width="100dp"-->
             <!--android:layout_height="wrap_content"/>-->
     <!--</FrameLayout>-->
-</merge>
+</RelativeLayout>

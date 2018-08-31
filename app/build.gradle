@@ -94,8 +94,17 @@ android {
 //                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-        huimincaipiao{
-            applicationId = "com.hse.huimincaipiao"
+//        huimincaipiao{
+//            applicationId = "com.hse.huimincaipiao"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"portrait",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "a2c04c7eab6c2ef74adb17ec", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+        laibaocaifu{
+            applicationId = "com.faw.laibaocaifu"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION:"portrait",
                     JPUSH_PKGNAME : applicationId,

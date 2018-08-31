@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
             public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
-                return myWebview.getScrollY() > 0;
+                return myWebview.getView().getScrollY() > 0;
             }
         });
         myWebview.loadUrl(Constant.START_URL);

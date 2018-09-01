@@ -3,16 +3,21 @@ package com.axiba.chiji;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -87,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private PopupMenu popupMenu;
 
     private Activity instance = this;
+    private int screenConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +167,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, 1);
 //        }
+        screenConfig = getRequestedOrientation();
+        getContentResolver().registerContentObserver(Settings.System
+                        .getUriFor(Settings.System.ACCELEROMETER_ROTATION), false,
+                oritationObserver);
+        if(!isScreenChangeOepn())setRequestedOrientation(instance.getResources().getConfiguration().orientation);
     }
+
+    ContentObserver oritationObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            if(!isScreenChangeOepn()){
+                if(instance.getResources().getConfiguration().orientation != 1){
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                }else{
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+            }else{
+                setRequestedOrientation(screenConfig);
+            }
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        getContentResolver().unregisterContentObserver(oritationObserver);
+        super.onDestroy();
+    }
+
+    private boolean isScreenChangeOepn(){
+        try {
+            int screenchange = Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION);
+            return screenchange==1;
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

@@ -11,6 +11,7 @@ public class Constant {
     public static final String NAVIGATION = "R.layout.navigation_layout";
 
     public static final boolean PULL_REFRESH = false;
+    public static final boolean FULL_SCREEN = false;
     public static final boolean SHOW_PROGRESSBAR = true;
     public static final boolean OUTER_WEB = false;
     public static final boolean SCALED = true;

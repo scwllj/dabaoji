@@ -112,12 +112,21 @@ android {
 //                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-        tiantiancai{
-            applicationId = "com.ga.tiantiancai"
+//        tiantiancai{
+//            applicationId = "com.ga.tiantiancai"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "4d05904866258756e63747bf", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+        zhongfuzaixian{
+            applicationId = "com.da.zhongfuzaixian"
             manifestPlaceholders = [
-                    SCREEN_ORIENTATION:"sensor",
+                    SCREEN_ORIENTATION:"portrait",
                     JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "4d05904866258756e63747bf", //JPush上注册的包名对应的appkey.
+                    JPUSH_APPKEY : "818952593a7d6c6652c630a1", //JPush上注册的包名对应的appkey.
                     JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
             ]
         }

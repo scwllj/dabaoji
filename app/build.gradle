@@ -121,13 +121,22 @@ android {
 //                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-        zhongfuzaixian{
-            applicationId = "com.da.zhongfuzaixian"
+//        zhongfuzaixian{
+//            applicationId = "com.da.zhongfuzaixian"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"portrait",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "818952593a7d6c6652c630a1", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+        huapingtouzi{
+            applicationId = "com.faw.huapingtouzi"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION:"portrait",
-                    JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "818952593a7d6c6652c630a1", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "818952593a7d6c6652c630a1", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
             ]
         }
     }
@@ -138,8 +147,8 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
-    implementation 'cn.jiguang.sdk:jpush:3.1.1'
-    implementation 'cn.jiguang.sdk:jcore:1.1.9'
+//    implementation 'cn.jiguang.sdk:jpush:3.1.1'
+//    implementation 'cn.jiguang.sdk:jcore:1.1.9'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation files('src/main/libs/tengxunx5.jar')
     implementation 'com.google.guava:guava:26.0-android'

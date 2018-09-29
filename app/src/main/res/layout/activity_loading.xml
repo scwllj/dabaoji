@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop" />
 
     <com.axiba.chiji.CircleProgress
         android:id="@+id/circle_progress"
@@ -22,4 +22,11 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:visibility="invisible" />
 </android.support.constraint.ConstraintLayout>

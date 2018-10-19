@@ -52,7 +52,13 @@ public class Loading extends AppCompatActivity {
 
         setContentView(R.layout.activity_loading);
         viewpager = findViewById(R.id.viewpager);
+        showLoading();
+//        showGuideOrToMain();
 
+
+    }
+
+    private void showLoading(){
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(getResources(), R.drawable.loading, options);
@@ -104,7 +110,6 @@ public class Loading extends AppCompatActivity {
             }
         });
         animator.start();
-
     }
 
     private Bitmap getImageFromAssetsFile(String fileName) {

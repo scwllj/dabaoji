@@ -55,6 +55,15 @@ android {
 //        weinisiren{
 //            applicationId = "com.ghf.weinisiren"
 //        }
+        hezhongwang{
+            applicationId = "com.ffa.hezhongwang"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION:"portrait",
+                    JPUSH_PKGNAME : applicationId,
+                    JPUSH_APPKEY : "818952593a7d6c6652c630a1", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+            ]
+        }
 //      -----------f蜂鸟
 
 //        weinisirenfn{
@@ -139,15 +148,15 @@ android {
 ////                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-        jinhuangyule{
-            applicationId = "com.ffa.jinhuangyule"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION:"portrait",
-                    JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "818952593a7d6c6652c630a1", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-            ]
-        }
+//        jinhuangyule{
+//            applicationId = "com.ffa.jinhuangyule"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"portrait",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "818952593a7d6c6652c630a1", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
     }
 }
 

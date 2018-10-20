@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Activity instance = this;
     private int screenConfig;
+//    BaseConstant baseConstant = new Constant();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,9 +166,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myWebview.loadUrl(Constant.START_URL);
         initByConfig();
         initWebview();
-//        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
+        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, 1);
-//        }
+        }
         screenConfig = getRequestedOrientation();
         getContentResolver().registerContentObserver(Settings.System
                         .getUriFor(Settings.System.ACCELEROMETER_ROTATION), false,

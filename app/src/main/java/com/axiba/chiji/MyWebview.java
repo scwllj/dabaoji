@@ -1,22 +1,32 @@
 package com.axiba.chiji;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.view.View;
 
 import com.tencent.smtt.sdk.WebView;
 
+import java.util.Map;
+
 public class MyWebview extends WebView {
 
-    public MyWebview(Context context, AttributeSet attrs) {
-        super(context,attrs);
+
+    public MyWebview(Context context) {
+        super(context);
     }
 
-    public MyWebview(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public MyWebview(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
     }
 
+    public MyWebview(Context context, AttributeSet attributeSet, int i) {
+        super(context, attributeSet, i);
+    }
+
+    public MyWebview(Context context, AttributeSet attributeSet, int i, boolean b) {
+        super(context, attributeSet, i, b);
+    }
+
+    public MyWebview(Context context, AttributeSet attributeSet, int i, Map<String, Object> map, boolean b) {
+        super(context, attributeSet, i, map, b);
+    }
 }

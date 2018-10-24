@@ -27,5 +27,5 @@ public class Constant {
         popMenu.add(new PopView.Menu("主页","http://43.249.204.90:85"));
         popMenu.add(new PopView.Menu("手机版", "http://43.249.204.90:86"));
         popMenu.add(new PopView.Menu("在线客服", "http://43.249.204.90:8011"));
-    }
+        }
 }

@@ -30,20 +30,16 @@ public class SharedApplication extends Application {
     }
 
     private void initX5(){
-        if(QbSdk.canLoadX5(this.getApplicationContext())){
-            QbSdk.initX5Environment(this.getApplicationContext(), new QbSdk.PreInitCallback() {
-                @Override
-                public void onCoreInitFinished() {
-                    Log.d(TAG, "onCoreInitFinished: ");
-                }
+        QbSdk.initX5Environment(this.getApplicationContext(), new QbSdk.PreInitCallback() {
+            @Override
+            public void onCoreInitFinished() {
+                Log.d(TAG, "----onCoreInitFinished: ");
+            }
 
-                @Override
-                public void onViewInitFinished(boolean b) {
-                    Log.d(TAG, "onViewInitFinished: "+b);
-                }
-            });
-        }else {
-            Log.d(TAG, "canLoadX5: false");
-        }
+            @Override
+            public void onViewInitFinished(boolean b) {
+                Log.d(TAG, "----onViewInitFinished: "+b);
+            }
+        });
     }
 }

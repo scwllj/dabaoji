@@ -4,12 +4,14 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +28,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tencent.smtt.sdk.QbSdk;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -34,13 +38,16 @@ import java.util.List;
 
 public class Loading extends AppCompatActivity {
 
+    private static final String TAG = "LOADING";
     private Bitmap bitmap;
     CircleProgress circleProgress;
     ViewPager viewpager;
     List<Bitmap> cache = new ArrayList<>();
     List<View> views = new ArrayList<>();
     final String FOLDER_NAME = "guide";
-
+    private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE","android.permission.READ_PHONE_STATE"};
+    private boolean granted;
+    private boolean endAnim;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +59,46 @@ public class Loading extends AppCompatActivity {
 
         setContentView(R.layout.activity_loading);
         viewpager = findViewById(R.id.viewpager);
+        granted = checkPermission();
         showLoading();
 //        showGuideOrToMain();
+
+
+
+    }
+
+    private boolean checkPermission(){
+        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")
+                != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, "android.permission.READ_PHONE_STATE")
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, 1);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        granted = true;
+        if(!QbSdk.isTbsCoreInited()){
+            QbSdk.initX5Environment(this.getApplicationContext(), new QbSdk.PreInitCallback() {
+                @Override
+                public void onCoreInitFinished() {
+                    Log.d(TAG, "----onCoreInitFinished: ");
+                }
+
+                @Override
+                public void onViewInitFinished(boolean b) {
+                    Log.d(TAG, "----onViewInitFinished: "+b);
+                    showGuideOrToMain();
+                }
+            });
+        }else {
+            showGuideOrToMain();
+        }
+
 
 
     }
@@ -96,6 +141,7 @@ public class Loading extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                endAnim = true;
                 showGuideOrToMain();
             }
 
@@ -136,6 +182,9 @@ public class Loading extends AppCompatActivity {
     }
 
     private void showGuideOrToMain() {
+        if(!granted || !endAnim){
+            return;
+        }
         try {
             String[] files = getAssets().list(FOLDER_NAME);
             if ((files == null

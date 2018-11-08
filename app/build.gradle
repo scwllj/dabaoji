@@ -166,12 +166,21 @@ android {
 //                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-        luluyingyuan{
-            applicationId = "com.ba.luluyingyuan"
+//        luluyingyuan{
+//            applicationId = "com.ba.luluyingyuan"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "f8ba27cdab54031eedb8ce9b", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+        xinpujingguanwang{
+            applicationId = "com.xpj.xinpujin"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION:"sensor",
                     JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "f8ba27cdab54031eedb8ce9b", //JPush上注册的包名对应的appkey.
+                    JPUSH_APPKEY : "893f0c10a9ffdb9ec067b7d6", //JPush上注册的包名对应的appkey.
                     JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
             ]
         }

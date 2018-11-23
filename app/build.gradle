@@ -176,6 +176,16 @@ android {
 //            ]
 //        }
 
+//        xinpujingguanwang{
+//            applicationId = "com.xpj.xinpujin"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "893f0c10a9ffdb9ec067b7d6", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default" //暂时填写默认值即可.
+//            ]
+//        }
+
 //        wangyicaipiao{
 //            applicationId = "com.alo.wangyicaipiao"
 //            manifestPlaceholders = [
@@ -191,9 +201,10 @@ android {
                     SCREEN_ORIENTATION:"sensor",
                     JPUSH_PKGNAME : applicationId,
                     JPUSH_APPKEY : "b003475a915b70782964b2c0", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                    JPUSH_CHANNEL : "developer-default" //暂时填写默认值即可.
             ]
         }
+
     }
 }
 

@@ -92,9 +92,10 @@ public class Loading extends AppCompatActivity {
                 @Override
                 public void onViewInitFinished(boolean b) {
                     Log.d(TAG, "----onViewInitFinished: "+b);
-                    showGuideOrToMain();
+//                    showGuideOrToMain();
                 }
             });
+            showGuideOrToMain();
         }else {
             showGuideOrToMain();
         }

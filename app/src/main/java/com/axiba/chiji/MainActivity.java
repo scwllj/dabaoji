@@ -55,6 +55,10 @@ import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+
+import cn.jpush.android.api.JPushInterface;
 
 import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_DEFAULT;
 import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_NO_CACHE;
@@ -173,6 +177,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .getUriFor(Settings.System.ACCELEROMETER_ROTATION), false,
                 oritationObserver);
         if(!isScreenChangeOepn())setRequestedOrientation(instance.getResources().getConfiguration().orientation);
+
+        if(BuildConfig.DEBUG){
+            Set<String> tags = new HashSet<>();
+            tags.add("test");
+            JPushInterface.setTags(this.getApplicationContext(),1,tags);
+        }
     }
 
     ContentObserver oritationObserver = new ContentObserver(new Handler()) {

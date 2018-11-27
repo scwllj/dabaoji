@@ -39,6 +39,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.axiba.chiji.receiver.MyJpushReceiver;
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
 import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.export.external.interfaces.SslError;
@@ -105,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.activity_main);
+
+        MyJpushReceiver.active = true;
+
         refresh = findViewById(R.id.refresh);
         if (refresh != null) refresh.setOnClickListener(this);
         home = findViewById(R.id.home);
@@ -683,6 +687,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, getString(R.string.exit), Toast.LENGTH_SHORT).show();
                 mills = System.currentTimeMillis();
             } else {
+                MyJpushReceiver.active = false;
                 finish();
                 System.exit(0);
             }

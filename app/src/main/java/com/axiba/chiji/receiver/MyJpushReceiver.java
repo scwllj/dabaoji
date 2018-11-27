@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.axiba.chiji.Loading;
 import com.axiba.chiji.MainActivity;
+import com.axiba.chiji.SharedApplication;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.service.PushService;
@@ -18,6 +20,7 @@ import cn.jpush.android.service.PushService;
 public class MyJpushReceiver extends BroadcastReceiver {
 
     private static final String TAG = "JIGUANG-Example";
+    public static boolean active = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,8 +43,13 @@ public class MyJpushReceiver extends BroadcastReceiver {
                 Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
 
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
-                Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
-                Intent i = new Intent(context, MainActivity.class);  //自定义打开的界面
+                Log.d(TAG, "[MyReceiver] 用户点击打开了通知"+active);
+                Intent i ;
+                if(active){
+                    i = new Intent(context, MainActivity.class);  //自定义打开的界面
+                }else{
+                    i = new Intent(context, Loading.class);  //自定义打开的界面
+                }
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(i);
             } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {

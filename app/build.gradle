@@ -11,10 +11,10 @@ android {
         flavorDimensions "dabao"
 
         manifestPlaceholders = [
-                SCREEN_ORIENTATION:"portrait"
+                SCREEN_ORIENTATION: "portrait"
         ]
 
-        ndk {abiFilters "armeabi", "armeabi-v7a", "x86", "mips"}
+        ndk { abiFilters "armeabi", "armeabi-v7a", "x86", "mips" }
     }
 
 
@@ -33,13 +33,24 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            applicationVariants.all { variant ->
+                variant.outputs.all {
+                    println getFlavorDimensionList();
+                    outputFileName = "cep" + "-" + buildType.name + ".apk";
+                }
+            }
         }
     }
 
-	
+
     lintOptions {
         abortOnError false
     }
+
+
+
+
 
     productFlavors {
 //        zztest{
@@ -205,6 +216,8 @@ android {
 //            ]
 //        }
 
+//        2018年11月28日21:17:49
+
 //        wangyicaipiao2{
 //            applicationId = "com.aac.wangyicaipiao2"
 //            manifestPlaceholders = [
@@ -214,14 +227,84 @@ android {
 //                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-
-        wanshunhao{
-            applicationId = "com.qaz.wanshunhao"
+//
+//        wanshunhao{
+//            applicationId = "com.qaz.wanshunhao"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "2b722fa13140886e8855a4cd", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//
+//        dafashangcheng1{
+//            applicationId = "com.lop.dafashangcheng1"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "6530539dd2fd635d2c20efec", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//
+//        dafashangcheng2{
+//            applicationId = "com.lop.dafashangcheng2"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "413643825b489ef013c4946c", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//
+//        dafashangcheng3{
+//            applicationId = "com.lop.dafashangcheng3"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "46ff9358d89a6b5fed7b8803", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//
+//        jucaishen1{
+//            applicationId = "com.tyj.jucaishen1"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "283d6eb1f2f2f65b61fecae0", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//
+//        jucaishen2{
+//            applicationId = "com.tyj.jucaishen2"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"sensor",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "fca6cb0ef6d852f5f97be4ac", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//
+        jucaishen3 {
+            applicationId = "com.tyj.jucaishen3"
             manifestPlaceholders = [
-                    SCREEN_ORIENTATION:"sensor",
-                    JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "2b722fa13140886e8855a4cd", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "eecd0f53fa88dcc08b7a6eff", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+            ]
+        }
+
+        wangyicaipiao3 {
+            applicationId = "com.wef.wangyicaipiao3"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "e544be0fae1468228fd0ca87", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
             ]
         }
     }

@@ -51,15 +51,15 @@ android {
 
 
     productFlavors {
-//        zztest{
-//            applicationId = "com.app.zztest"
-//            manifestPlaceholders = [
-//                    SCREEN_ORIENTATION:"portrait",
-//                    JPUSH_PKGNAME : applicationId,
-//                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
-//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-//            ]
-//        }
+        zztest{
+            applicationId = "com.app.zztest"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION:"portrait",
+                    JPUSH_PKGNAME : applicationId,
+                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+            ]
+        }
 //        --------------张
 //        weinisiren{
 //            applicationId = "com.ghf.weinisiren"
@@ -306,25 +306,25 @@ android {
 //            ]
 //        }
 
-        wangyicaipiao3339356 {
-            applicationId = "com.wef.wangyicaipiao3339356"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION: "sensor",
-                    JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "331ba5726a1b39444925e21c", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-            ]
-        }
-
-        wangyicaipiao3459356 {
-            applicationId = "com.wef.wangyicaipiao3459356"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION: "sensor",
-                    JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "d7cae23f8c21914b696b6b39", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-            ]
-        }
+//        wangyicaipiao3339356 {
+//            applicationId = "com.wef.wangyicaipiao3339356"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "331ba5726a1b39444925e21c", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//
+//        wangyicaipiao3459356 {
+//            applicationId = "com.wef.wangyicaipiao3459356"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "d7cae23f8c21914b696b6b39", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
     }
 }
 

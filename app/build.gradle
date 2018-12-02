@@ -51,15 +51,15 @@ android {
 
 
     productFlavors {
-        zztest{
-            applicationId = "com.app.zztest"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION:"portrait",
-                    JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-            ]
-        }
+//        zztest{
+//            applicationId = "com.app.zztest"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"portrait",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
 //        --------------张
 //        weinisiren{
 //            applicationId = "com.ghf.weinisiren"
@@ -325,6 +325,15 @@ android {
 //                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
+        jiuzhoucaipiao {
+            applicationId = "com.coa.jiuzhoucaipiao"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "786b5b97cfa73855e7b5a8d9", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+            ]
+        }
     }
 }
 

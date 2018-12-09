@@ -14,13 +14,16 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -85,19 +88,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessage5;
 
-    private final int CODE_UPLOAD_FILE_SINGLE = 213;
-    private final int CODE_UPLOAD_FILE_MULT = 11;
+    private final int CODE_UPLOAD_FILE = 2;
+    private final int CODE_UPLOAD_CAMERA = 3;
+    private String mCameraFilePath = null;
 
     private View xCustomView;
     private IX5WebChromeClient.CustomViewCallback xCustomViewCallback;
     private FrameLayout fullScreenVedio;
 
     private boolean errorLoaded;
-    private PopupMenu popupMenu;
 
     private Activity instance = this;
     private int screenConfig;
-//    BaseConstant baseConstant = new Constant();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -413,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 LogUtil.d("MainActivity", "---onReceivedError" + errorCode + "__" + description);
-                if (errorCode == -2) {
+                if (errorCode == -2 && view.getUrl().equals(failingUrl)) {
                     errorNotice.setVisibility(View.VISIBLE);
                     errorLoaded = true;
                 }
@@ -424,10 +426,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
                 super.onReceivedHttpError(view, request, errorResponse);
-                if (errorResponse.getStatusCode() == 404 && request.getUrl().toString().equals(Constant.START_URL)) {
-                    errorNotice.setVisibility(View.VISIBLE);
-                    errorLoaded = true;
-                } else if (errorResponse.getStatusCode() == 500) {
+                if ((errorResponse.getStatusCode() == 404 || errorResponse.getStatusCode() == 500)
+                        && request.getUrl().toString().equals(view.getUrl())) {
                     errorNotice.setVisibility(View.VISIBLE);
                     errorLoaded = true;
                 }
@@ -437,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                if (error.getErrorCode() == -2) {
+                if (error.getErrorCode() == -2 && view.getUrl().equals(request.getUrl().toString())) {
                     errorNotice.setVisibility(View.VISIBLE);
                     errorLoaded = true;
                 }
@@ -503,20 +503,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
 
-            @TargetApi(21)
-            public boolean onShowFileChooser(WebView paramAnonymousWebView, ValueCallback<Uri[]> paramAnonymousValueCallback, FileChooserParams paramAnonymousFileChooserParams) {
-                if (mUploadMessage5 != null) {
-                    mUploadMessage5.onReceiveValue(new Uri[]{});
+            @RequiresApi(21)
+            public boolean onShowFileChooser(WebView paramAnonymousWebView, ValueCallback<Uri[]> paramAnonymousValueCallback, WebChromeClient.FileChooserParams paramAnonymousFileChooserParams) {
+                if (MainActivity.this.mUploadMessage5 != null) {
+                    MainActivity.this.mUploadMessage5.onReceiveValue(new Uri[]{});
                 }
                 mUploadMessage5 = paramAnonymousValueCallback;
-                Intent intent = paramAnonymousFileChooserParams.createIntent();
-                try {
-                    startActivityForResult(intent, CODE_UPLOAD_FILE_MULT);
-                    return true;
-                } catch (ActivityNotFoundException e) {
-                    mUploadMessage5.onReceiveValue(new Uri[]{});
-                    mUploadMessage5 = null;
-                }
+                showChooser();
                 return true;
             }
 
@@ -533,12 +526,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mUploadMessage.onReceiveValue(null);
                 }
                 mUploadMessage = paramAnonymousValueCallback;
-                Intent intent = new Intent("android.intent.action.GET_CONTENT");
-                intent.addCategory("android.intent.category.OPENABLE");
-                intent.setType("*/*");
-                startActivityForResult(Intent.createChooser(intent, "File Browser"), CODE_UPLOAD_FILE_SINGLE);
+                showChooser();
             }
         });
+    }
+
+    private void showChooser() {
+        new AlertDialog.Builder(this)
+                .setTitle("File Chooser")
+                .setNegativeButton("文件", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("*/*");
+                        MainActivity.this.startActivityForResult(intent, CODE_UPLOAD_FILE);
+                    }
+                })
+                .setPositiveButton("拍照", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (ActivityCompat.checkSelfPermission(MainActivity.this, "android.permission.CAMERA") != 0) {
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{"android.permission.CAMERA"}, 1);
+                            if (mUploadMessage != null) {
+                                mUploadMessage.onReceiveValue(null);
+                                mUploadMessage = null;
+                            } else if (mUploadMessage5 != null) {
+                                mUploadMessage5.onReceiveValue(new Uri[]{});
+                                mUploadMessage5 = null;
+                            }
+                            return;
+                        }
+                        MainActivity.this.startActivityForResult(createCameraIntent(), CODE_UPLOAD_CAMERA);
+                    }
+                }).show();
+    }
+
+    private Intent createCameraIntent() {
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File externalDataDir = Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        File cameraDataDir = new File(externalDataDir.getAbsolutePath(),"file_chooser" );
+        if (!cameraDataDir.exists()) {
+            cameraDataDir.mkdirs();
+        }
+        mCameraFilePath = cameraDataDir.getAbsolutePath() + File.separator
+                + System.currentTimeMillis() + ".jpg";
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                getUriFromFile(new File(mCameraFilePath)));
+        cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        return cameraIntent;
+    }
+
+    private Uri getUriFromFile(File file) {
+        return FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file);
     }
 
     private void hideCustomView() {
@@ -575,31 +618,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Uri result = data == null || resultCode != RESULT_OK ? null : data.getData();
 
-        if (requestCode == CODE_UPLOAD_FILE_MULT) {
+
+        if (requestCode == CODE_UPLOAD_FILE) {
+            Uri result = data == null || resultCode != RESULT_OK ? null : data.getData();
             if (result != null && mUploadMessage5 != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mUploadMessage5.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
-                } else {
                     mUploadMessage5.onReceiveValue(new Uri[]{result});
-                }
             } else {
                 if (mUploadMessage5 != null) {
-                    mUploadMessage5.onReceiveValue(new Uri[]{});
+                    if(result == null){
+                        mUploadMessage5.onReceiveValue(new Uri[]{});
+                    }else{
+                        mUploadMessage5.onReceiveValue(new Uri[]{result});
+                    }
+                } else if (mUploadMessage != null) {
+                    mUploadMessage.onReceiveValue(result);
                 }
             }
-        } else if (requestCode == CODE_UPLOAD_FILE_SINGLE) {
+
+        } else if (requestCode == CODE_UPLOAD_CAMERA) {
+            File file = new File(mCameraFilePath);
+            Uri uri = null;
+            if (file.exists()) {
+                uri = getUriFromFile(file);
+            }
             if (mUploadMessage != null) {
-                mUploadMessage.onReceiveValue(result);
+                mUploadMessage.onReceiveValue(uri);
+            } else if (mUploadMessage5 != null) {
+                if(uri == null){
+                    mUploadMessage5.onReceiveValue(new Uri[]{});
+                }else{
+                    mUploadMessage5.onReceiveValue(new Uri[]{uri});
+                }
+
             }
         }
-        if (mUploadMessage5 != null) {
-            mUploadMessage5 = null;
-        }
-        if (mUploadMessage != null) {
-            mUploadMessage = null;
-        }
+        mUploadMessage = null;
+        mUploadMessage5 = null;
     }
 
     @Override

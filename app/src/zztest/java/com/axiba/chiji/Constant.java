@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Constant {
-    public static final String START_URL = "http://www.bingchina.com ";
-    public static final String HOME_URL = "http://www.bingchina.com";
+    public static final String START_URL = "http://www.aeletne.com";
+    public static final String HOME_URL = "http://www.aeletne.com";
     public static final String NAVIGATION = "R.layout.navigation_layout";
 
     public static final boolean PULL_REFRESH = false;

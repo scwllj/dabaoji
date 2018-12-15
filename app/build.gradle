@@ -51,15 +51,15 @@ android {
 
 
     productFlavors {
-        zztest{
-            applicationId = "com.app.zztest"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION:"portrait",
-                    JPUSH_PKGNAME : applicationId,
-                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-            ]
-        }
+//        zztest{
+//            applicationId = "com.app.zztest"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION:"portrait",
+//                    JPUSH_PKGNAME : applicationId,
+//                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
 //        --------------张
 //        weinisiren{
 //            applicationId = "com.ghf.weinisiren"
@@ -359,6 +359,25 @@ android {
 //                    SCREEN_ORIENTATION: "sensor",
 //                    JPUSH_PKGNAME     : applicationId,
 //                    JPUSH_APPKEY      : "7cf27f8f24422753d79dd2b5", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+        aomenxinpujing {
+            applicationId = "com.ysc.aomenxinpujing"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "7cf27f8f24422753d79dd2b5", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+            ]
+        }
+
+//        lecaiwang {
+//            applicationId = "com.ysc.lecaiwang"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "037f1975aa27b0e824b358bb", //JPush上注册的包名对应的appkey.
 //                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }

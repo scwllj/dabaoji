@@ -39,6 +39,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.axiba.chiji.receiver.MyJpushReceiver;
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
 import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.export.external.interfaces.SslError;
@@ -58,7 +59,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-//import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.JPushInterface;
 
 import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_DEFAULT;
 import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_NO_CACHE;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.activity_main);
+        MyJpushReceiver.active = true;
 
         refresh = findViewById(R.id.refresh);
         if (refresh != null) refresh.setOnClickListener(this);
@@ -181,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(BuildConfig.DEBUG){
             Set<String> tags = new HashSet<>();
             tags.add("test");
-//            JPushInterface.setTags(this.getApplicationContext(),1,tags);
+            JPushInterface.setTags(this.getApplicationContext(),1,tags);
         }
     }
 

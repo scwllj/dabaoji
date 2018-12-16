@@ -363,11 +363,11 @@ android {
 //            ]
 //        }
         aomenxinpujing {
-            applicationId = "com.ysc.aomenxinpujing"
+            applicationId = "com.cap.aomenxinpujing"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION: "sensor",
                     JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "7cf27f8f24422753d79dd2b5", //JPush上注册的包名对应的appkey.
+                    JPUSH_APPKEY      : "cc5f3cbd67546025b00d8c59", //JPush上注册的包名对应的appkey.
                     JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
             ]
         }

@@ -52,9 +52,9 @@ android {
 
     productFlavors {
 //        zztest{
-//            applicationId = "com.app.zztest"
+//            applicationId = "com.srwy.splk"
 //            manifestPlaceholders = [
-//                    SCREEN_ORIENTATION:"portrait",
+//                    SCREEN_ORIENTATION:"sensor",
 //                    JPUSH_PKGNAME : applicationId,
 //                    JPUSH_APPKEY : "5ed3ae41bcede6f6b59b6203", //JPush上注册的包名对应的appkey.
 //                    JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
@@ -362,15 +362,15 @@ android {
 //                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-        aomenxinpujing {
-            applicationId = "com.cap.aomenxinpujing"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION: "sensor",
-                    JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "cc5f3cbd67546025b00d8c59", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-            ]
-        }
+//        aomenxinpujing {
+//            applicationId = "com.cap.aomenxinpujing"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "cc5f3cbd67546025b00d8c59", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
 
 //        lecaiwang {
 //            applicationId = "com.ysc.lecaiwang"
@@ -381,6 +381,26 @@ android {
 //                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
+
+//        hengfengguoji {
+//            applicationId = "com.vr.hengfengguoji"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "92080944d17837ebe4a0ac32", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+        toutiaocaipiao2 {
+            applicationId = "com.cs.toutiaocaipiao2"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "ae845ad86735d565b2aa6b7e", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+            ]
+        }
     }
 }
 

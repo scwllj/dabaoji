@@ -392,12 +392,86 @@ android {
 //            ]
 //        }
 
-        toutiaocaipiao2 {
-            applicationId = "com.cs.toutiaocaipiao2"
+//        toutiaocaipiao2 {
+//            applicationId = "com.cs.toutiaocaipiao2"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "ae845ad86735d565b2aa6b7e", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+//        jinxinyitou {
+//            applicationId = "com.cs.jinxinyitou"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "ae845ad86735d565b2aa6b7e", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+//        jinxinyitou2 {
+//            applicationId = "com.cs.jinxinyitou2"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "ae845ad86735d565b2aa6b7e", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//        wangyicaipiao069356 {
+//            applicationId = "com.cs.wangyicaipiao069356"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "c56d96dd47503ee9bdb98838", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//        wangyicaipiao499356 {
+//            applicationId = "com.cs.wangyicaipiao499356"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "c402ef646ffac779580a888f", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//        wangyicaipiao509356 {
+//            applicationId = "com.cs.wangyicaipiao509356"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "5359f28d849e48f34acd1e89", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+        wangyicaipiao319356 {
+            applicationId = "com.cs.wangyicaipiao319356"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION: "sensor",
                     JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "ae845ad86735d565b2aa6b7e", //JPush上注册的包名对应的appkey.
+                    JPUSH_APPKEY      : "55b7ef31e7aa6b371edbcac4", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+            ]
+        }
+        wangyicaipiao729356 {
+            applicationId = "com.cs.wangyicaipiao729356"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "de166ae7dacfb80c426d8dd7", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+            ]
+        }
+        wangyicaipiao539356 {
+            applicationId = "com.cs.wangyicaipiao539356"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "6ea9cd8b630861c0420acbde", //JPush上注册的包名对应的appkey.
                     JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
             ]
         }

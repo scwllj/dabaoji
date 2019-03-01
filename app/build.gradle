@@ -325,15 +325,15 @@ android {
 //                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-//        jiuzhoucaipiao {
-//            applicationId = "com.coa.jiuzhoucaipiao"
-//            manifestPlaceholders = [
-//                    SCREEN_ORIENTATION: "sensor",
-//                    JPUSH_PKGNAME     : applicationId,
-//                    JPUSH_APPKEY      : "786b5b97cfa73855e7b5a8d9", //JPush上注册的包名对应的appkey.
-//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-//            ]
-//        }
+        jiuzhoucaipiao {
+            applicationId = "com.coa.jiuzhoucaipiao"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "786b5b97cfa73855e7b5a8d9", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+            ]
+        }
 
 //        toutiaocaipiao {
 //            applicationId = "com.wfr.toutiaocaipiao"
@@ -448,33 +448,42 @@ android {
 //                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-        wangyicaipiao319356 {
-            applicationId = "com.cs.wangyicaipiao319356"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION: "sensor",
-                    JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "55b7ef31e7aa6b371edbcac4", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-            ]
-        }
-        wangyicaipiao729356 {
-            applicationId = "com.cs.wangyicaipiao729356"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION: "sensor",
-                    JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "de166ae7dacfb80c426d8dd7", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-            ]
-        }
-        wangyicaipiao539356 {
-            applicationId = "com.cs.wangyicaipiao539356"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION: "sensor",
-                    JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "6ea9cd8b630861c0420acbde", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-            ]
-        }
+//        wangyicaipiao319356 {
+//            applicationId = "com.cs.wangyicaipiao319356"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "55b7ef31e7aa6b371edbcac4", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//        wangyicaipiao729356 {
+//            applicationId = "com.cs.wangyicaipiao729356"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "de166ae7dacfb80c426d8dd7", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//        wangyicaipiao539356 {
+//            applicationId = "com.cs.wangyicaipiao539356"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "6ea9cd8b630861c0420acbde", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+//        dafashangcheng88df {
+//            applicationId = "com.ac.dafashangcheng88df"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "b958d255640699dd7b9a8007", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
     }
 }
 

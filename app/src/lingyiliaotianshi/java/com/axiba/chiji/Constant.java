@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Constant extends BaseConstant{
+public class Constant {
     public static final String START_URL = "http://103.41.66.194:8011";
     public static final String HOME_URL = "http://103.41.66.194:8011";
     public static final String NAVIGATION = "R.layout.navigation_layout";

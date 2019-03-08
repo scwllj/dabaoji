@@ -1,14 +1,19 @@
 package com.axiba.chiji;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,7 +36,9 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -39,6 +46,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.axiba.chiji.BaseConstant.FloatMenuItem;
 import com.axiba.chiji.receiver.MyJpushReceiver;
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
 import com.tencent.smtt.export.external.interfaces.JsResult;
@@ -61,6 +69,8 @@ import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
 
+import static android.graphics.Color.WHITE;
+import static com.axiba.chiji.BaseConstant.FloatMenuItem.*;
 import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_DEFAULT;
 import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_NO_CACHE;
 import static com.tencent.smtt.export.external.interfaces.IX5WebViewBase.HitTestResult.IMAGE_TYPE;
@@ -78,9 +88,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressBar progressBar;
     private FrameLayout sliderMenuContainer;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private BaseConstant baseConstant = new Constant();
 
     private boolean showProgressBar;
-    private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE","android.permission.READ_PHONE_STATE"};
+    private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_PHONE_STATE"};
 
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessage5;
@@ -97,15 +108,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Activity instance = this;
     private int screenConfig;
+    private LinearLayout floatMenuContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Constant.FULL_SCREEN) {
+        if (baseConstant.isFullScreen()) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.activity_main);
         MyJpushReceiver.active = true;
+
+        floatMenuContainer = findViewById(R.id.floatMenuContainer);
 
         refresh = findViewById(R.id.refresh);
         if (refresh != null) refresh.setOnClickListener(this);
@@ -156,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fullScreenVedio = findViewById(R.id.fullScreenVedio);
         myWebview = findViewById(R.id.webview);
         drawerLayout = findViewById(R.id.drawerLayout);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         sliderContent = findViewById(R.id.slider_content);
         progressBar = findViewById(R.id.progressBar);
         topNavigation = findViewById(R.id.top_navi);
@@ -167,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return myWebview.getView().getScrollY() > 0;
             }
         });
-        myWebview.loadUrl(Constant.START_URL);
+        myWebview.loadUrl(baseConstant.getStartUrl());
         initByConfig();
         initWebview();
         if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")
@@ -178,12 +193,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getContentResolver().registerContentObserver(Settings.System
                         .getUriFor(Settings.System.ACCELEROMETER_ROTATION), false,
                 oritationObserver);
-        if(!isScreenChangeOepn())setRequestedOrientation(instance.getResources().getConfiguration().orientation);
+        if (!isScreenChangeOepn())
+            setRequestedOrientation(instance.getResources().getConfiguration().orientation);
 
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             Set<String> tags = new HashSet<>();
             tags.add("test");
-            JPushInterface.setTags(this.getApplicationContext(),1,tags);
+            JPushInterface.setTags(this.getApplicationContext(), 1, tags);
+        }
+
+        if (baseConstant.getFloatMenuItem() != null) {
+            initFloatMenu();
         }
     }
 
@@ -191,13 +211,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
-            if(!isScreenChangeOepn()){
-                if(instance.getResources().getConfiguration().orientation != 1){
+            if (!isScreenChangeOepn()) {
+                if (instance.getResources().getConfiguration().orientation != 1) {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-                }else{
+                } else {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
-            }else{
+            } else {
                 setRequestedOrientation(screenConfig);
             }
         }
@@ -214,10 +234,137 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
     }
 
-    private boolean isScreenChangeOepn(){
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (baseConstant.getFloatMenuItem() != null
+                && baseConstant.getFloatMenuItem().length > 0) {
+            initFloatMenuContainerLocation();
+        }
+    }
+
+    float downX;
+    float downY;
+    boolean drag;
+    final int distance = 10;
+    final int floatPadding = 10;
+
+    private void initFloatMenuContainerLocation(){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            floatMenuContainer.setTranslationX(DeviceHelper.screenH * 3 / 4.0f);
+            floatMenuContainer.setTranslationY(DeviceHelper.screenW * 4 / 10.0f);
+        }else {
+            floatMenuContainer.setTranslationX(DeviceHelper.screenW * 3 / 4.0f);
+            floatMenuContainer.setTranslationY(DeviceHelper.screenH * 6 / 10.0f);
+        }
+
+    }
+
+    private void initFloatMenu() {
+
+        initFloatMenuContainerLocation();
+        int[] items = baseConstant.getFloatMenuItem();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, DeviceHelper.dp2px(24));
+        params.bottomMargin = DeviceHelper.dp2px(8);
+        params.topMargin = DeviceHelper.dp2px(8);
+        for (int i = 0; i < items.length; i++) {
+            AppCompatImageView appCompatImageView = new AppCompatImageView(this);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                appCompatImageView.setImageTintMode(PorterDuff.Mode.SRC_OUT);
+            }
+            appCompatImageView.setTag(items[i]);
+            appCompatImageView.setSupportImageTintList(ColorStateList.valueOf(WHITE));
+            switch (getItem(items[i])) {
+                case ITEM_BACK:
+                    appCompatImageView.setImageResource(R.drawable.back_float);
+                    break;
+                case ITEM_HOME:
+                    appCompatImageView.setImageResource(R.drawable.home_float);
+                    break;
+                case ITEM_REFRESH:
+                    appCompatImageView.setImageResource(R.drawable.refresh_float);
+                    break;
+            }
+            floatMenuContainer.addView(appCompatImageView, params);
+        }
+
+
+        floatMenuContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        downX = event.getX();
+                        downY = event.getY();
+                        drag = false;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (!drag
+                                && (Math.abs(event.getX() - downX) > distance
+                                || Math.abs(event.getY() - downY) > distance)) {
+                            drag = true;
+                            downX = event.getX();
+                            downY = event.getY();
+                        }
+                        if (drag) {
+                            floatMenuContainer.setTranslationX(floatMenuContainer.getX() + event.getX() - downX);
+                            floatMenuContainer.setTranslationY(floatMenuContainer.getY() + event.getY() - downY);
+                        }
+
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (!drag) {
+                            float cellHeight = floatMenuContainer.getHeight() / baseConstant.getFloatMenuItem().length;
+                            View view = floatMenuContainer.getChildAt((int) (event.getY() / cellHeight));
+                            if (view != null) {
+                                Integer tag = (Integer) view.getTag();
+                                switch (getItem(tag)) {
+                                    case ITEM_BACK:
+                                        if (myWebview.canGoBack()) {
+                                            myWebview.goBack();
+                                        }
+                                        break;
+                                    case ITEM_HOME:
+                                        myWebview.loadUrl(baseConstant.getHomeUrl());
+                                        break;
+                                    case ITEM_REFRESH:
+                                        myWebview.reload();
+                                        break;
+                                }
+                            }
+                        } else {
+                            int computeW = DeviceHelper.screenW;
+                            int computeH = DeviceHelper.screenH;
+                            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                computeW = DeviceHelper.screenH;
+                                computeH = DeviceHelper.screenW;
+                            }
+                            if (floatMenuContainer.getX() < floatPadding) {
+                                floatMenuContainer.setTranslationX(floatPadding);
+                            } else if (floatMenuContainer.getX() > computeW - floatMenuContainer.getWidth() - floatPadding) {
+                                floatMenuContainer.setTranslationX(computeW - floatMenuContainer.getWidth() - floatPadding);
+                            }
+                            if (floatMenuContainer.getY() < floatPadding) {
+                                floatMenuContainer.setTranslationY(floatPadding);
+                            } else if (floatMenuContainer.getY() > computeH - DeviceHelper.getStatusBarHeight() - floatMenuContainer.getHeight() - floatPadding) {
+                                floatMenuContainer.setTranslationY(computeH - DeviceHelper.getStatusBarHeight() - floatMenuContainer.getHeight() - floatPadding);
+                            }
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private boolean isScreenChangeOepn() {
         try {
             int screenchange = Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION);
-            return screenchange==1;
+            return screenchange == 1;
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
@@ -228,16 +375,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        QbSdk.initX5Environment(this.getApplicationContext(),null);
+        QbSdk.initX5Environment(this.getApplicationContext(), null);
     }
 
     private void initByConfig() {
         progressBar.setMax(100);
-        showProgressBar = Constant.SHOW_PROGRESSBAR;
-        progressBar.setVisibility(showProgressBar?View.VISIBLE:View.INVISIBLE);
+        showProgressBar = baseConstant.isShowProgressBar();
+        progressBar.setVisibility(showProgressBar ? View.VISIBLE : View.INVISIBLE);
 
-        swipeRefreshLayout.setEnabled(Constant.PULL_REFRESH);
-        if (Constant.PULL_REFRESH) {
+        swipeRefreshLayout.setEnabled(baseConstant.isPullRefresh());
+        if (baseConstant.isPullRefresh()) {
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -269,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myWebview.getSettings().setUseWideViewPort(true);
         myWebview.getSettings().setLoadWithOverviewMode(true);
         myWebview.getSettings().setAppCacheEnabled(true);
-        myWebview.getSettings().setCacheMode(Constant.NEED_CACHE ? LOAD_DEFAULT : LOAD_NO_CACHE);
+        myWebview.getSettings().setCacheMode(baseConstant.isNeedCache() ? LOAD_DEFAULT : LOAD_NO_CACHE);
         myWebview.getSettings().setDomStorageEnabled(true);
         myWebview.getSettings().setAppCacheEnabled(true);
         if (Build.VERSION.SDK_INT >= 21) {
@@ -322,8 +469,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 LogUtil.d("MainActivity", "---shouldOverrideUrlLoading:" + url);
-                if (Constant.outerLink != null && Constant.outerLink.get(url) != null) {
-                    openSystemBrower(Constant.outerLink.get(url));
+                if (baseConstant.getOuterLink() != null && baseConstant.getOuterLink().get(url) != null) {
+                    openSystemBrower(baseConstant.getOuterLink().get(url));
                     return true;
                 }
                 try {
@@ -374,7 +521,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                if (!url.toLowerCase().contains(Constant.HOME_URL)) { //过滤广告
+                if (!url.toLowerCase().contains(baseConstant.getHomeUrl())) { //过滤广告
                     if (!hasAd(instance, url)) {
                         return super.shouldInterceptRequest(view, url);
                     } else {
@@ -390,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
-                if (!url.toLowerCase().contains(Constant.HOME_URL)) { //过滤广告
+                if (!url.toLowerCase().contains(baseConstant.getHomeUrl())) { //过滤广告
                     if (!hasAd(instance, url)) {
                         return super.shouldInterceptRequest(view, request);
                     } else {
@@ -450,7 +597,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (newProgress == 100) {
                         errorNotice.setVisibility(errorLoaded ? View.VISIBLE : View.INVISIBLE);
                         progressBar.setVisibility(View.INVISIBLE);
-                        if (Constant.PULL_REFRESH) {
+                        if (baseConstant.isPullRefresh()) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     } else {
@@ -564,7 +711,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         File externalDataDir = Environment
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        File cameraDataDir = new File(externalDataDir.getAbsolutePath(),"file_chooser" );
+        File cameraDataDir = new File(externalDataDir.getAbsolutePath(), "file_chooser");
         if (!cameraDataDir.exists()) {
             cameraDataDir.mkdirs();
         }
@@ -619,12 +766,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == CODE_UPLOAD_FILE) {
             Uri result = data == null || resultCode != RESULT_OK ? null : data.getData();
             if (result != null && mUploadMessage5 != null) {
-                    mUploadMessage5.onReceiveValue(new Uri[]{result});
+                mUploadMessage5.onReceiveValue(new Uri[]{result});
             } else {
                 if (mUploadMessage5 != null) {
-                    if(result == null){
+                    if (result == null) {
                         mUploadMessage5.onReceiveValue(new Uri[]{});
-                    }else{
+                    } else {
                         mUploadMessage5.onReceiveValue(new Uri[]{result});
                     }
                 } else if (mUploadMessage != null) {
@@ -641,9 +788,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (mUploadMessage != null) {
                 mUploadMessage.onReceiveValue(uri);
             } else if (mUploadMessage5 != null) {
-                if(uri == null){
+                if (uri == null) {
                     mUploadMessage5.onReceiveValue(new Uri[]{});
-                }else{
+                } else {
                     mUploadMessage5.onReceiveValue(new Uri[]{uri});
                 }
 
@@ -657,7 +804,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if (v == home || v == homeLayout || v == homeImg) {
-            myWebview.loadUrl(Constant.HOME_URL);
+            myWebview.loadUrl(baseConstant.getHomeUrl());
         } else if (v == refresh || v == refreshLayout || v == refreshImg) {
             myWebview.reload();
         } else if (v == back || v == backLayout || v == backImg) {
@@ -679,7 +826,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     void showPopMenu(View view) {
         PopView popView = new PopView(this, view);
-        popView.setData(Constant.popMenu);
+        popView.setData(baseConstant.getPopMenu());
         popView.setOnItemClickListener(new PopView.OnItemClickListener() {
             @Override
             public void onItemClick(PopView.Menu menu) {

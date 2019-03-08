@@ -3,7 +3,7 @@ package com.axiba.chiji;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Constant {
+public class Constant  {
     public static final String START_URL="http://sg86tl1s1iksil1lijslja.xyz/m";
     public static final String HOME_URL="http://sg86tl1s1iksil1lijslja.xyz/m";
     public static final String NAVIGATION="R.layout.navigation_layout";

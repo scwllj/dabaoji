@@ -325,15 +325,15 @@ android {
 //                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-        jiuzhoucaipiao {
-            applicationId = "com.coa.jiuzhoucaipiao"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION: "sensor",
-                    JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "786b5b97cfa73855e7b5a8d9", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-            ]
-        }
+//        jiuzhoucaipiao {
+//            applicationId = "com.coa.jiuzhoucaipiao"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "786b5b97cfa73855e7b5a8d9", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
 
 //        toutiaocaipiao {
 //            applicationId = "com.wfr.toutiaocaipiao"
@@ -475,15 +475,15 @@ android {
 //                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
-//        dafashangcheng88df {
-//            applicationId = "com.ac.dafashangcheng88df"
-//            manifestPlaceholders = [
-//                    SCREEN_ORIENTATION: "sensor",
-//                    JPUSH_PKGNAME     : applicationId,
-//                    JPUSH_APPKEY      : "b958d255640699dd7b9a8007", //JPush上注册的包名对应的appkey.
-//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-//            ]
-//        }
+        dafashangcheng88df {
+            applicationId = "com.ac.dafashangcheng88df"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "b958d255640699dd7b9a8007", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+            ]
+        }
     }
 }
 

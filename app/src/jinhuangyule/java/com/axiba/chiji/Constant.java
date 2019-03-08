@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Constant {
+public class Constant  {
     public static final String START_URL = "https://m.jh4399.com/";
     public static final String HOME_URL = "https://m.jh4399.com/";
     public static final String NAVIGATION = "R.layout.navigation_layout";

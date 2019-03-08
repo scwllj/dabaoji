@@ -61,4 +61,11 @@
             <!--android:layout_width="100dp"-->
             <!--android:layout_height="wrap_content"/>-->
     <!--</FrameLayout>-->
+    <LinearLayout
+        android:id="@+id/floatMenuContainer"
+        android:orientation="vertical"
+        android:layout_width="35dp"
+        android:background="@drawable/float_menu_bg"
+        android:layout_height="wrap_content"
+        android:visibility="visible"/>
 </merge>

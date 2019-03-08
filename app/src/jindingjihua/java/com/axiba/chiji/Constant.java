@@ -1,6 +1,6 @@
 package com.axiba.chiji;
 
-public class Constant {
+public class Constant  {
     public static final String START_URL="http://www.152917.com";
     public static final String HOME_URL="http://www.152917.com";
     public static final String NAVIGATION="R.layout.navigation_layout";

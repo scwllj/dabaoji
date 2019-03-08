@@ -29,6 +29,7 @@ public class SharedApplication extends Application {
         JPushInterface.setDebugMode(BuildConfig.DEBUG);
         JPushInterface.init(this.getApplicationContext());
         initX5();
+        DeviceHelper.init();
     }
 
     private void initX5(){

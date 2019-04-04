@@ -5,12 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.axiba.chiji.BaseConstant.FloatMenuItem.ITEM_CLEAR;
+import static com.axiba.chiji.BaseConstant.FloatMenuItem.ITEM_HOME;
+import static com.axiba.chiji.BaseConstant.FloatMenuItem.ITEM_REFRESH;
+
 public abstract class BaseConstant {
 
     public static enum FloatMenuItem {
         ITEM_BACK(1),
         ITEM_REFRESH(2),
-        ITEM_HOME(3);
+        ITEM_HOME(3),
+        ITEM_CLEAR(4);
 
         private final int i;
 
@@ -22,10 +27,22 @@ public abstract class BaseConstant {
             if (i == 1) return ITEM_BACK;
             else if (i == 2) return ITEM_REFRESH;
             else if (i == 3) return ITEM_HOME;
+            else if (i == 4) return ITEM_CLEAR;
             else return ITEM_BACK;
         }
 
+    }
 
+    public static class SliderMenu {
+        public String name;
+        public FloatMenuItem action;
+        public int iconId;
+
+        public SliderMenu(String name, FloatMenuItem action, int iconId) {
+            this.name = name;
+            this.action = action;
+            this.iconId = iconId;
+        }
     }
 
     protected abstract String getStartUrl();
@@ -33,7 +50,7 @@ public abstract class BaseConstant {
     protected abstract String getHomeUrl();
 
     protected boolean isPullRefresh() {
-        return false;
+        return true;
     }
 
     protected boolean isFullScreen() {
@@ -81,10 +98,15 @@ public abstract class BaseConstant {
     }
 
     protected int[] getFloatMenuItem() {
-        return new int[]{3, 1};
+        return null;
     }
 
-    protected String getFloatMenuBg() {
-        return "#aa000000";
+    protected boolean showGuideDirectly() {
+        return false;
     }
+
+    protected List<SliderMenu> getSliderMenu() {
+        return null;
+    }
+
 }

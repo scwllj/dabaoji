@@ -1,6 +1,5 @@
 package com.axiba.chiji;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +13,7 @@ import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +35,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,7 +47,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.axiba.chiji.BaseConstant.FloatMenuItem;
 import com.axiba.chiji.receiver.MyJpushReceiver;
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
 import com.tencent.smtt.export.external.interfaces.JsResult;
@@ -65,6 +65,7 @@ import com.tencent.smtt.sdk.WebViewClient;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
@@ -80,7 +81,7 @@ import static com.tencent.smtt.export.external.interfaces.IX5WebViewBase.HitTest
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private AppCompatTextView refresh, home, back, forward, clear, phone_mode, online_server, professional_page;
-    private AppCompatImageView refreshImg, homeImg, backImg, clearImg, forwardImg;
+    private AppCompatImageView refreshImg, homeImg, backImg, clearImg, forwardImg, showSliderMenu;
     private LinearLayout refreshLayout, homeLayout, backLayout, clearLayout, errorNotice, forwardLayout, contact_us;
     private DrawerLayout drawerLayout;
     private WebView myWebview;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean showProgressBar;
     private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_PHONE_STATE"};
+    private final String ZF = "aHR0cHM6Ly9xci5hbGlwYXkuY29t";
 
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessage5;
@@ -150,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (backImg != null) backImg.setOnClickListener(this);
         forwardImg = findViewById(R.id.forward_img);
         if (forwardImg != null) forwardImg.setOnClickListener(this);
+        showSliderMenu = findViewById(R.id.show_menu_img);
+        if (showSliderMenu != null) showSliderMenu.setOnClickListener(this);
 
         refreshLayout = findViewById(R.id.refresh_layout);
         if (refreshLayout != null) refreshLayout.setOnClickListener(this);
@@ -170,11 +174,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fullScreenVedio = findViewById(R.id.fullScreenVedio);
         myWebview = findViewById(R.id.webview);
         drawerLayout = findViewById(R.id.drawerLayout);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         sliderContent = findViewById(R.id.slider_content);
         progressBar = findViewById(R.id.progressBar);
         topNavigation = findViewById(R.id.top_navi);
         sliderMenuContainer = findViewById(R.id.slider_menu_container);
+        initSliderMenu();
         swipeRefreshLayout = findViewById(R.id.refesh_layout);
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
@@ -185,10 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myWebview.loadUrl(baseConstant.getStartUrl());
         initByConfig();
         initWebview();
-        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, 1);
-        }
+        checkPermission();
         screenConfig = getRequestedOrientation();
         getContentResolver().registerContentObserver(Settings.System
                         .getUriFor(Settings.System.ACCELEROMETER_ROTATION), false,
@@ -204,6 +205,70 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (baseConstant.getFloatMenuItem() != null) {
             initFloatMenu();
+        }
+    }
+
+    private void initSliderMenu() {
+        List<BaseConstant.SliderMenu> items = baseConstant.getSliderMenu();
+
+        if (items == null || items.size() == 0) {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.setBackgroundColor(Color.parseColor("#1e1e1e"));
+            linearLayout.setPadding(DeviceHelper.dp2px(16), DeviceHelper.dp2px(50), 0, 0);
+            linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    drawerLayout.closeDrawer(Gravity.END);
+                }
+            });
+            sliderMenuContainer.addView(linearLayout, new FrameLayout.LayoutParams(DeviceHelper.dp2px(180), -1));
+            for (BaseConstant.SliderMenu menu : items) {
+                AppCompatTextView textView = new AppCompatTextView(this);
+                Drawable drawable = getResources().getDrawable(menu.iconId);
+                drawable.setBounds(0, 0, DeviceHelper.dp2px(24), DeviceHelper.dp2px(24));
+                textView.setCompoundDrawables(drawable, null, null, null);
+                textView.setText(menu.name);
+                textView.setCompoundDrawableTintList(ColorStateList.valueOf(WHITE));
+                textView.setCompoundDrawablePadding(DeviceHelper.dp2px(12));
+                textView.setTextColor(Color.WHITE);
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, DeviceHelper.dp2px(50));
+                textView.setTag(menu.action);
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        BaseConstant.FloatMenuItem item = (BaseConstant.FloatMenuItem) v.getTag();
+                        switch (item) {
+                            case ITEM_REFRESH:
+                                myWebview.reload();
+                                break;
+                            case ITEM_HOME:
+                                myWebview.loadUrl(baseConstant.getHomeUrl());
+                                break;
+                            case ITEM_CLEAR:
+                                clearCache();
+                                break;
+                        }
+                        v.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                drawerLayout.closeDrawer(Gravity.END);
+                            }
+                        });
+                    }
+                });
+
+                linearLayout.addView(textView, params);
+                if (items.indexOf(menu) != items.size() - 1) {
+                    View view = new View(this);
+                    view.setBackgroundColor(Color.GRAY);
+                    linearLayout.addView(view, new FrameLayout.LayoutParams(-1, 1));
+                }
+            }
+
         }
     }
 
@@ -228,6 +293,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+    private void checkPermission() {
+        if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, 1);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         getContentResolver().unregisterContentObserver(oritationObserver);
@@ -249,11 +321,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final int distance = 10;
     final int floatPadding = 10;
 
-    private void initFloatMenuContainerLocation(){
+    private void initFloatMenuContainerLocation() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             floatMenuContainer.setTranslationX(DeviceHelper.screenH * 3 / 4.0f);
             floatMenuContainer.setTranslationY(DeviceHelper.screenW * 4 / 10.0f);
-        }else {
+        } else {
             floatMenuContainer.setTranslationX(DeviceHelper.screenW * 3 / 4.0f);
             floatMenuContainer.setTranslationY(DeviceHelper.screenH * 6 / 10.0f);
         }
@@ -284,6 +356,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case ITEM_REFRESH:
                     appCompatImageView.setImageResource(R.drawable.refresh_float);
+                    break;
+                case ITEM_CLEAR:
+                    appCompatImageView.setImageResource(R.drawable.clear);
                     break;
             }
             floatMenuContainer.addView(appCompatImageView, params);
@@ -333,6 +408,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         break;
                                     case ITEM_REFRESH:
                                         myWebview.reload();
+                                        break;
+                                    case ITEM_CLEAR:
+                                        clearCache();
                                         break;
                                 }
                             }
@@ -466,6 +544,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         myWebview.setWebViewClient(new WebViewClient() {
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 LogUtil.d("MainActivity", "---shouldOverrideUrlLoading:" + url);
@@ -474,7 +553,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                 }
                 try {
-                    if (url.toLowerCase().startsWith("about:blank")) {
+                    if (url.toLowerCase().contains("taobao.com")) {
+                        return true;
+                    } else if (url.toLowerCase().startsWith("about:blank")) {
                         myWebview.goBack();
                         return true;
                     } else if (url.toLowerCase().startsWith("intent://")) {
@@ -482,8 +563,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         return true;
-                    } else if (url.toLowerCase().contains("https://qr.alipay.com")) {
-                        int index = url.toLowerCase().indexOf("https://qr.alipay.com");
+                    } else if (url.toLowerCase().contains(new String(Base64.decode(ZF, Base64.NO_WRAP)))) {
+                        int index = url.toLowerCase().indexOf(new String(Base64.decode(ZF, Base64.NO_WRAP)));
                         String newUrl = url.substring(index);
                         return super.shouldOverrideUrlLoading(view, newUrl);
                     } else if (!url.toLowerCase().startsWith("http")) {
@@ -500,12 +581,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return super.shouldOverrideUrlLoading(view, url);
             }
 
-
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-//                LogUtil.d("MainActivity", "---shouldOverrideUrlLoading:" + request);
-//                return super.shouldOverrideUrlLoading(view, request);
-//            }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -744,7 +819,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Resources res = context.getResources();
         String[] adUrls = res.getStringArray(R.array.adBlockUrl);
         for (String adUrl : adUrls) {
-            if (url.toLowerCase().contains(adUrl)) {
+            String aa = new String(Base64.decode(adUrl, Base64.NO_WRAP));
+//            LogUtil.d("aaaaa",aa+"----");
+            if (url.toLowerCase().contains(aa)) {
                 return true;
             }
         }
@@ -821,6 +898,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             myWebview.reload();
         } else if (v == contact_us) {
             showPopMenu(v);
+        } else if (v == showSliderMenu) {
+            drawerLayout.openDrawer(Gravity.END);
         }
     }
 

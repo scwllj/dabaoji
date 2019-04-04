@@ -17,6 +17,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -45,9 +46,11 @@ public class Loading extends AppCompatActivity {
     List<Bitmap> cache = new ArrayList<>();
     List<View> views = new ArrayList<>();
     final String FOLDER_NAME = "guide";
-    private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE","android.permission.READ_PHONE_STATE"};
+    private static String[] PERMISSIONS_STORAGE = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_PHONE_STATE"};
     private boolean granted;
     private boolean endAnim;
+    BaseConstant baseConstant = new Constant();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,14 +63,14 @@ public class Loading extends AppCompatActivity {
         setContentView(R.layout.activity_loading);
         viewpager = findViewById(R.id.viewpager);
         granted = checkPermission();
-        showLoading();
-//        showGuideOrToMain();
-
-
-
+        if (baseConstant.showGuideDirectly()) {
+            showGuideOrToMainDirectly();
+        } else {
+            showLoading();
+        }
     }
 
-    private boolean checkPermission(){
+    private boolean checkPermission() {
         if (ActivityCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")
                 != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, "android.permission.READ_PHONE_STATE")
@@ -82,7 +85,7 @@ public class Loading extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         granted = true;
-        if(!QbSdk.isTbsCoreInited()){
+        if (!QbSdk.isTbsCoreInited()) {
             QbSdk.initX5Environment(this.getApplicationContext(), new QbSdk.PreInitCallback() {
                 @Override
                 public void onCoreInitFinished() {
@@ -91,20 +94,19 @@ public class Loading extends AppCompatActivity {
 
                 @Override
                 public void onViewInitFinished(boolean b) {
-                    Log.d(TAG, "----onViewInitFinished: "+b);
+                    Log.d(TAG, "----onViewInitFinished: " + b);
 //                    showGuideOrToMain();
                 }
             });
             showGuideOrToMain();
-        }else {
+        } else {
             showGuideOrToMain();
         }
 
 
-
     }
 
-    private void showLoading(){
+    private void showLoading() {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(getResources(), R.drawable.loading, options);
@@ -182,19 +184,24 @@ public class Loading extends AppCompatActivity {
         return image;
     }
 
+
     private void showGuideOrToMain() {
-        if(!granted || !endAnim){
+        if (!granted || !endAnim) {
             return;
         }
+        showGuideOrToMainDirectly();
+    }
+
+    private void showGuideOrToMainDirectly() {
         try {
             String[] files = getAssets().list(FOLDER_NAME);
             if ((files == null
                     || files.length == 0)
-                    || !getSharedPreferences("config", MODE_PRIVATE).getBoolean("firstInstalled", true)
+//                    || !getSharedPreferences("config", MODE_PRIVATE).getBoolean("firstInstalled", true)
                     ) {
                 startActivity(new Intent(Loading.this, MainActivity.class));
                 finish();
-                overridePendingTransition(R.anim.activity_enter,R.anim.activity_exit);
+                overridePendingTransition(R.anim.activity_enter, R.anim.activity_exit);
             } else {
                 getSharedPreferences("config", MODE_PRIVATE).edit().putBoolean("firstInstalled", false).commit();
                 Arrays.sort(files);
@@ -205,26 +212,28 @@ public class Loading extends AppCompatActivity {
                     imageView.setImageBitmap(cache.get(i));
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     if (i == files.length - 1) {
-                        FrameLayout frameLayout = new FrameLayout(this);
-                        frameLayout.addView(imageView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-                        TextView textView = new TextView(this);
-                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-                        params.gravity = Gravity.RIGHT;
-                        params.rightMargin = 30;
-                        params.topMargin = 30;
-                        textView.setText("进入主页");
-                        textView.setPadding(20, 10, 20, 10);
-                        textView.setBackgroundResource(R.drawable.to_main_bg);
-                        frameLayout.addView(textView, params);
-                        textView.setOnClickListener(new View.OnClickListener() {
+//                        FrameLayout frameLayout = new FrameLayout(this);
+//                        frameLayout.addView(imageView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+//                        TextView textView = new TextView(this);
+//                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+//                        params.gravity = Gravity.RIGHT;
+//                        params.rightMargin = 30;
+//                        params.topMargin = 30;
+//                        textView.setText("进入主页");
+//                        textView.setPadding(20, 10, 20, 10);
+//                        textView.setBackgroundResource(R.drawable.to_main_bg);
+//                        frameLayout.addView(textView, params);
+                        imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                startActivity(new Intent(Loading.this, MainActivity.class));
+                                Intent intent = new Intent(Loading.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivity(intent);
                                 finish();
-                                overridePendingTransition(R.anim.activity_enter,R.anim.activity_exit);
+                                overridePendingTransition(R.anim.activity_enter, R.anim.activity_exit);
                             }
                         });
-                        view = frameLayout;
+                        view = imageView;
                     } else {
                         view = imageView;
                     }

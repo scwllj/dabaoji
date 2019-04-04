@@ -12,6 +12,7 @@
     <item name="refresh_img" type="id"></item>
     <item name="forward_img" type="id"></item>
     <item name="clear_img" type="id"></item>
+    <item name="show_menu_img" type="id"></item>
 
     <item name="home_layout" type="id"></item>
     <item name="back_layout" type="id"></item>

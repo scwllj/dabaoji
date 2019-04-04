@@ -1,0 +1,5 @@
+<resources>
+    <string name="exit">再按一次退出</string>
+    <!-- APP名字 -->
+    <string name="app_name">国投高新</string>
+</resources>

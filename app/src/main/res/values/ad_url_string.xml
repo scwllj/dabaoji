@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="adBlockUrl">
-        <item>ubmcmm.baidustatic.com</item>
-        <item>cpro2.baidustatic.com</item>
-        <item>cpro.baidustatic.com</item>
-        <item>s.lianmeng.360.cn</item>
-        <item>nsclick.baidu.com</item>
-        <item>pos.baidu.com</item>
-        <item>cbjs.baidu.com</item>
-        <item>cpro.baidu.com</item>
-        <item>images.sohu.com/cs/jsfile/js/c.js</item>
-        <item>union.sogou.com/</item>
-        <item>sogou.com/</item>
-        <item>a.baidu.com</item>
-        <item>c.baidu.com</item>
+        <item>dWJtY21tLmJhaWR1c3RhdGljLmNvbQ==</item>
+        <item>Y3BybzIuYmFpZHVzdGF0aWMuY29t</item>
+        <item>Y3Byby5iYWlkdXN0YXRpYy5jb20=</item>
+        <item>cy5saWFubWVuZy4zNjAuY24=</item>
+        <item>bnNjbGljay5iYWlkdS5jb20=</item>
+        <item>cG9zLmJhaWR1LmNvbQ==</item>
+        <item>Y2Jqcy5iYWlkdS5jb20=</item>
+        <item>Y3Byby5iYWlkdS5jb20=</item>
+        <item>aW1hZ2VzLnNvaHUuY29tL2NzL2pzZmlsZS9qcy9jLmpz</item>
+        <item>dW5pb24uc29nb3UuY29tLw==</item>
+        <item>c29nb3UuY29tLw==</item>
+        <item>YS5iYWlkdS5jb20=</item>
+        <item>Yy5iYWlkdS5jb20=</item>
 
     </string-array>
 </resources>

@@ -10,13 +10,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -26,9 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
-/**
- * Created by 李宏阳 on 2017/12/3.
- */
 
 public class FileUtils {
     public static File getAvalableImagePath(Context context) {
@@ -153,82 +149,66 @@ public class FileUtils {
         public String fileName;
         public String realpath;
         public String noticeStr;
+        public byte[] fileBytes;
     }
 
     //Glide保存图片
     public static void savePicture(final Context context, final String fileName, String url) {
-//        new AsyncTask<String, String, DownloadResult>() {
-//
-//            @Override
-//            protected DownloadResult doInBackground(String... strings) {
-//                String fileName = strings[0];
-//                String urlString = strings[1];
-//                DownloadResult downloadResult = new DownloadResult();
-//                downloadResult.fileName = fileName;
-//                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-//                    try {
-//                        String filePath = Environment.getExternalStorageDirectory()
-//                                + File.separator + Environment.DIRECTORY_DCIM
-//                                + File.separator + "Camera" + File.separator;
-//                        File dir1 = new File(filePath);
-//                        if (!dir1.exists()) {
-//                            dir1.mkdirs();
-//                        }
-//                        String realPath = new File(filePath, fileName + ".jpg").getPath();
-//                        URL url = new URL(urlString);
-//                        DataInputStream dataInputStream = new DataInputStream(url.openStream());
-//
-//                        FileOutputStream fileOutputStream = new FileOutputStream(new File(realPath));
-//                        ByteArrayOutputStream output = new ByteArrayOutputStream();
-//
-//                        byte[] buffer = new byte[1024];
-//                        int length;
-//
-//                        while ((length = dataInputStream.read(buffer)) > 0) {
-//                            output.write(buffer, 0, length);
-//                        }
-//                        fileOutputStream.write(output.toByteArray());
-//                        dataInputStream.close();
-//                        fileOutputStream.close();
-//                        downloadResult.success = true;
-//                        downloadResult.realpath = realPath;
-//                        downloadResult.noticeStr = "图片已成功保存到相册" + realPath;
-//                    } catch (Exception e) {
-//                        downloadResult.noticeStr = "保存失败！";
-//                    }
-//                } else {
-//                    downloadResult.noticeStr = "SD卡不存在或者不可读写";
-//                }
-//                return downloadResult;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(DownloadResult retsult) {
-//                Toast.makeText(context, retsult.noticeStr, Toast.LENGTH_SHORT).show();
-//                if (retsult.success) {
-//                    try {
-//                        MediaScannerConnection.scanFile(context,new String[]{retsult.realpath},null,null);
-//                        MediaStore.Images.Media.insertImage(context.getContentResolver(),
-//                                retsult.realpath, retsult.fileName, null);
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-//                    context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-//                            Uri.fromFile(new File(retsult.realpath))));
-//                }
-//            }
-//        }.execute(fileName, url);
+        new AsyncTask<String, String, DownloadResult>() {
 
-        Glide.with(context).load(url).asBitmap().toBytes().into(new SimpleTarget<byte[]>() {
             @Override
-            public void onResourceReady(byte[] bytes, GlideAnimation<? super byte[]> glideAnimation) {
-                try {
-                    savaFileToSD(context, fileName, bytes);
-                } catch (Exception e) {
-                    e.printStackTrace();
+            protected DownloadResult doInBackground(String... strings) {
+                String fileName = strings[0];
+                String urlString = strings[1];
+                DownloadResult downloadResult = new DownloadResult();
+                downloadResult.fileName = fileName;
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    try {
+                        String filePath = Environment.getExternalStorageDirectory()
+                                + File.separator + Environment.DIRECTORY_DCIM
+                                + File.separator + "Camera" + File.separator;
+                        File dir1 = new File(filePath);
+                        if (!dir1.exists()) {
+                            dir1.mkdirs();
+                        }
+                        String realPath = new File(filePath, fileName + ".jpg").getPath();
+                        URL url = new URL(urlString);
+                        DataInputStream dataInputStream = new DataInputStream(url.openStream());
+
+                        FileOutputStream fileOutputStream = new FileOutputStream(new File(realPath));
+                        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+                        byte[] buffer = new byte[1024];
+                        int length;
+
+                        while ((length = dataInputStream.read(buffer)) > 0) {
+                            output.write(buffer, 0, length);
+                        }
+                        fileOutputStream.write(output.toByteArray());
+                        dataInputStream.close();
+                        fileOutputStream.close();
+                        downloadResult.success = true;
+                        downloadResult.realpath = realPath;
+                        downloadResult.noticeStr = "图片已成功保存到相册" + realPath;
+                    } catch (Exception e) {
+                        downloadResult.noticeStr = "保存失败！";
+                    }
+                } else {
+                    downloadResult.noticeStr = "SD卡不存在或者不可读写";
+                }
+                return downloadResult;
+            }
+
+            @Override
+            protected void onPostExecute(final DownloadResult retsult) {
+                Log.d("TAG", "onPostExecute: " + Thread.currentThread().getName());
+                Toast.makeText(context, "" + retsult.noticeStr, Toast.LENGTH_SHORT).show();
+                if (retsult.success) {
+                    MediaScannerConnection.scanFile(context, new String[]{retsult.realpath}, null, null);
                 }
             }
-        });
+        }.execute(fileName, url);
+
     }
 
     //往SD卡写入文件的方法
@@ -244,7 +224,7 @@ public class FileUtils {
                 if (!dir1.exists()) {
                     dir1.mkdirs();
                 }
-                String filename1 = filePath + "/" + filename + ".jpg";
+                String filename1 = filePath + filename + ".jpg";
                 //这里就不要用openFileOutput了,那个是往手机内存中写数据的
                 FileOutputStream output = new FileOutputStream(filename1);
                 output.write(bytes);
@@ -253,8 +233,9 @@ public class FileUtils {
                 //关闭输出流
                 Toast.makeText(context, "图片已成功保存到相册" + filePath, Toast.LENGTH_SHORT).show();
 // 其次把文件插入到系统图库
+                MediaScannerConnection.scanFile(context, new String[]{filename1}, null, null);
                 MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                        filename1, filename, null);
+                        filename1, filename + ".jpg", null);
                 context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                         Uri.fromFile(new File(filename1))));
             } catch (FileNotFoundException e) {

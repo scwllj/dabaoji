@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Constant extends BaseConstant {
-    public static final String START_URL = "http://www.guotou010.com/mobile/";
+    public static final String START_URL = "https://www.baidu.com/";
     public static final String HOME_URL = "http://www.guotou010.com/mobile/";
     public static final String NAVIGATION = "R.layout.navigation_layout";
 

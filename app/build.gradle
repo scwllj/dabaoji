@@ -531,10 +531,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
-    implementation 'cn.jiguang.sdk:jpush:3.1.1'
-    implementation 'cn.jiguang.sdk:jcore:1.1.9'
+    implementation 'cn.jiguang.sdk:jpush:3.2.0'
+    implementation 'cn.jiguang.sdk:jcore:1.2.7'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation files('src/main/libs/tengxunx5.jar')
-    implementation 'com.google.guava:guava:26.0-android'
 }

@@ -495,18 +495,8 @@ android {
 //            ]
 //        }
 
-        guotouziben {
-            applicationId = "com.gwt.guotouziben"
-            manifestPlaceholders = [
-                    SCREEN_ORIENTATION: "sensor",
-                    JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "b958d255640699dd7b9a8007", //JPush上注册的包名对应的appkey.
-                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
-            ]
-        }
-
-//        tianhaoyitou {
-//            applicationId = "com.buvr.nlzpt"
+//        guotouziben {
+//            applicationId = "com.gwt.guotouziben"
 //            manifestPlaceholders = [
 //                    SCREEN_ORIENTATION: "sensor",
 //                    JPUSH_PKGNAME     : applicationId,
@@ -514,6 +504,16 @@ android {
 //                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
 //            ]
 //        }
+
+        tianhaoyitou {
+            applicationId = "com.buvr.nlzpt"
+            manifestPlaceholders = [
+                    SCREEN_ORIENTATION: "sensor",
+                    JPUSH_PKGNAME     : applicationId,
+                    JPUSH_APPKEY      : "b958d255640699dd7b9a8007", //JPush上注册的包名对应的appkey.
+                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+            ]
+        }
 
 //        leying {
 //            applicationId = "com.apps.LEYINGA"

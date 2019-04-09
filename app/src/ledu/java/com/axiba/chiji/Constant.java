@@ -5,12 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.axiba.chiji.BaseConstant.FloatMenuItem.ITEM_CLEAR;
+import static com.axiba.chiji.BaseConstant.FloatMenuItem.ITEM_HOME;
+import static com.axiba.chiji.BaseConstant.FloatMenuItem.ITEM_REFRESH;
+
 public class Constant extends BaseConstant {
-    public static final String START_URL = "http://www.guotou010.com/mobile/";
-    public static final String HOME_URL = "http://www.guotou010.com/mobile/";
+    public static final String START_URL = "http://35.194.242.223:8131/leDuCPLoginWeb/app/home";
+    public static final String HOME_URL = "http://35.194.242.223:8131/leDuCPLoginWeb/app/home";
     public static final String NAVIGATION = "R.layout.navigation_layout";
 
-    public static final boolean PULL_REFRESH = false;
+    public static final boolean PULL_REFRESH = true;
     public static final boolean FULL_SCREEN = false;
     public static final boolean SHOW_PROGRESSBAR = true;
     public static final boolean OUTER_WEB = false;
@@ -24,9 +28,7 @@ public class Constant extends BaseConstant {
     public static final List<PopView.Menu> popMenu = new ArrayList<>();
     public static final Map<String, String> outerLink = new HashMap<>();
     static {
-        popMenu.add(new PopView.Menu("主页","http://43.249.204.90:85"));
-        popMenu.add(new PopView.Menu("手机版", "http://43.249.204.90:86"));
-        popMenu.add(new PopView.Menu("在线客服", "http://43.249.204.90:8011"));
+
         }
 
     @Override
@@ -65,7 +67,14 @@ public class Constant extends BaseConstant {
     }
 
     @Override
-    protected boolean showGuideDirectly() {
-        return true;
+    protected List<SliderMenu> getSliderMenu() {
+        List<SliderMenu> list = new ArrayList<>();
+        FloatMenuItem[] actions = {ITEM_HOME, ITEM_REFRESH, ITEM_CLEAR};
+        String[] names = {"首页", "刷新", "清除缓存"};
+        int[] iconIds = {R.drawable.home, R.drawable.refresh, R.drawable.clear};
+        for (int i = 0; i < 3; i++) {
+            list.add(new SliderMenu(names[i], actions[i], iconIds[i]));
+        }
+        return list;
     }
 }

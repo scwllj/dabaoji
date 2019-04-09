@@ -13,8 +13,8 @@ import com.axiba.chiji.SharedApplication;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.service.PushService;
 
-//import cn.jpush.android.api.JPushInterface;
-//import cn.jpush.android.service.PushService;
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.service.PushService;
 
 
 public class MyJpushReceiver extends BroadcastReceiver {

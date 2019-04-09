@@ -47,7 +47,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-//import com.axiba.chiji.receiver.MyJpushReceiver;
+import com.axiba.chiji.receiver.MyJpushReceiver;
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient;
 import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.export.external.interfaces.SslError;
@@ -68,7 +68,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.JPushInterface;
 
 import static android.graphics.Color.WHITE;
 import static com.axiba.chiji.BaseConstant.FloatMenuItem.*;
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.activity_main);
-//        MyJpushReceiver.active = true;
+        MyJpushReceiver.active = true;
 
         floatMenuContainer = findViewById(R.id.floatMenuContainer);
 
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (BuildConfig.DEBUG) {
             Set<String> tags = new HashSet<>();
             tags.add("test");
-//            JPushInterface.setTags(this.getApplicationContext(), 1, tags);
+            JPushInterface.setTags(this.getApplicationContext(), 1, tags);
         }
 
         if (baseConstant.getFloatMenuItem() != null) {

@@ -2,9 +2,7 @@ package com.axiba.chiji;
 
 import android.app.Application;
 import android.app.Notification;
-import android.util.Log;
 
-import com.axiba.chiji.receiver.MyJpushReceiver;
 import com.tencent.smtt.sdk.QbSdk;
 
 import cn.jpush.android.api.BasicPushNotificationBuilder;
@@ -38,12 +36,12 @@ public class SharedApplication extends Application {
         QbSdk.initX5Environment(this.getApplicationContext(), new QbSdk.PreInitCallback() {
             @Override
             public void onCoreInitFinished() {
-                Log.d(TAG, "----onCoreInitFinished: ");
+                LogUtil.d(TAG, "----onCoreInitFinished: ");
             }
 
             @Override
             public void onViewInitFinished(boolean b) {
-                Log.d(TAG, "----onViewInitFinished: " + b);
+                LogUtil.d(TAG, "----onViewInitFinished: " + b);
             }
         });
     }

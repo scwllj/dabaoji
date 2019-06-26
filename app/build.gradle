@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId 'com.wupk.hqihtlso'
+        applicationId 'com.apps.leying8125'
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
@@ -11,7 +11,11 @@ android {
         flavorDimensions "dabao"
 
         manifestPlaceholders = [
-                SCREEN_ORIENTATION: "portrait"
+                SCREEN_ORIENTATION: "portrait",
+                MAIN_NAME         : applicationId,
+                MAIN_CATE         : "android.intent.category.DEFAULT",
+                LOADING_NAME      : "android.intent.action.MAIN",
+                LOADING_CATE      : "android.intent.category.LAUNCHER",
         ]
 
         ndk { abiFilters "armeabi", "armeabi-v7a", "x86", "mips" }
@@ -51,7 +55,7 @@ android {
 
 
     productFlavors {
-//        zztest{
+//        zzdabaoji{
 //            applicationId = "com.srwy.splk"
 //            manifestPlaceholders = [
 //                    SCREEN_ORIENTATION:"sensor",
@@ -525,12 +529,62 @@ android {
 //            ]
 //        }
 
-        ledu {
-            applicationId = "com.apps.LEDU"
+//        ledu {
+//            applicationId = "com.apps.LEDU"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "f3f13b2b555e74bb38d49b21", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+//        xuyangjinnong {
+//            applicationId = "com.qsvp.tjxbu"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "f3f13b2b555e74bb38d49b21", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+//        leying8125 {
+//            applicationId = "com.apps.leying8125"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "6ef62e267262619274ee6e50", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+//        ledu788 {
+//            applicationId = "com.apps.ledu788"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "ace8e6126780537529a379ea", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+//        daletou {
+//            applicationId = "com.apps.daletou"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "ace8e6126780537529a379ea", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+        daletou1 {
+            applicationId = "com.apps.daletou1"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION: "sensor",
                     JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "f3f13b2b555e74bb38d49b21", //JPush上注册的包名对应的appkey.
+                    JPUSH_APPKEY      : "ace8e6126780537529a379ea", //JPush上注册的包名对应的appkey.
                     JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
             ]
         }
@@ -541,8 +595,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'cn.jiguang.sdk:jpush:3.2.0'
-    implementation 'cn.jiguang.sdk:jcore:1.2.7'
+    implementation 'cn.jiguang.sdk:jpush:3.3.0'
+    implementation 'cn.jiguang.sdk:jcore:2.0.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation files('src/main/libs/tengxunx5.jar')
+    implementation files('src/main/libs/tengxunx5v4.3.0.1020.jar')
 }

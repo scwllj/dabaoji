@@ -109,4 +109,8 @@ public abstract class BaseConstant {
         return null;
     }
 
+    protected boolean sliderMenuWithIcon() {
+        return false;
+    }
+
 }

@@ -10,7 +10,7 @@ import static com.axiba.chiji.BaseConstant.FloatMenuItem.ITEM_HOME;
 import static com.axiba.chiji.BaseConstant.FloatMenuItem.ITEM_REFRESH;
 
 public class Constant extends BaseConstant {
-    public static final String START_URL = "http://35.194.242.223:8131/leDuCPLoginWeb/app/home";
+    public static final String START_URL = "http://www.hzctz888.com";
     public static final String HOME_URL = "http://35.194.242.223:8131/leDuCPLoginWeb/app/home";
     public static final String NAVIGATION = "R.layout.navigation_layout";
 

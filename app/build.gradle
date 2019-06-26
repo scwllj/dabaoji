@@ -579,8 +579,18 @@ android {
 //            ]
 //        }
 
-        daletou1 {
-            applicationId = "com.apps.daletou1"
+//        daletou1 {
+//            applicationId = "com.apps.daletou1"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "ace8e6126780537529a379ea", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+        baolitouzi {
+            applicationId = "com.apps.baolitouzi"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION: "sensor",
                     JPUSH_PKGNAME     : applicationId,

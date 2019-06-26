@@ -113,4 +113,7 @@ public abstract class BaseConstant {
         return false;
     }
 
+    protected Integer getStatusBarColor() {
+        return null;
+    }
 }

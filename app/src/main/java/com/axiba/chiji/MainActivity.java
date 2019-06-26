@@ -125,7 +125,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_main);
+        getWindow().getDecorView().setFitsSystemWindows(true);
         MyJpushReceiver.active = true;
+
+        setHalfTransparent();
 
         floatMenuContainer = findViewById(R.id.floatMenuContainer);
         alertProgress = findViewById(R.id.alertProgress);
@@ -217,6 +220,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    protected void setHalfTransparent() {
+
+        if (baseConstant.getStatusBarColor() != null) {
+            if (Build.VERSION.SDK_INT >= 21) {
+                View decorView = getWindow().getDecorView();
+                int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                decorView.setSystemUiVisibility(option);
+                getWindow().setStatusBarColor(baseConstant.getStatusBarColor());
+            } else if (Build.VERSION.SDK_INT >= 19) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            }
+        }
+    }
+
     private void initSliderMenu() {
         List<BaseConstant.SliderMenu> items = baseConstant.getSliderMenu();
 
@@ -235,13 +252,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
             sliderMenuContainer.addView(linearLayout, new FrameLayout.LayoutParams(DeviceHelper.dp2px(180), -1));
 
-            if(baseConstant.sliderMenuWithIcon()){
+            if (baseConstant.sliderMenuWithIcon()) {
                 AppCompatImageView logoImage = new AppCompatImageView(this);
                 logoImage.setImageResource(R.drawable.iconx);
-                LinearLayout.LayoutParams logoParams =new LinearLayout.LayoutParams(DeviceHelper.dp2px(100),DeviceHelper.dp2px(100));
-                logoParams.gravity =  Gravity.CENTER_HORIZONTAL;
+                LinearLayout.LayoutParams logoParams = new LinearLayout.LayoutParams(DeviceHelper.dp2px(100), DeviceHelper.dp2px(100));
+                logoParams.gravity = Gravity.CENTER_HORIZONTAL;
                 logoParams.bottomMargin = DeviceHelper.dp2px(16);
-                linearLayout.addView(logoImage,logoParams);
+                linearLayout.addView(logoImage, logoParams);
             }
 
             for (BaseConstant.SliderMenu menu : items) {
@@ -705,7 +722,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (showProgressBar) progressBar.setVisibility(View.VISIBLE);
                     }
                 }
-                if(baseConstant.isShowLoading()){
+                if (baseConstant.isShowLoading()) {
                     if (newProgress == 100) {
                         errorNotice.setVisibility(errorLoaded ? View.VISIBLE : View.INVISIBLE);
                         alertProgress.setVisibility(View.INVISIBLE);

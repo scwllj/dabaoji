@@ -1,6 +1,8 @@
 *.iml
-/.gradle/
+.gradle/
 .DS_Store
 /captures
-.externalNativeBuild
-/.idea/
+.externalNativeBuild/
+.idea/
+app/build/
+build/

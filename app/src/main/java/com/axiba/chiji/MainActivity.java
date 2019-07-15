@@ -63,6 +63,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.HashSet;
@@ -242,8 +243,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             LinearLayout linearLayout = new LinearLayout(this);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-            linearLayout.setBackgroundColor(Color.parseColor("#1e1e1e"));
-            linearLayout.setPadding(DeviceHelper.dp2px(16), DeviceHelper.dp2px(32), 0, 0);
+            linearLayout.setBackgroundColor(Color.parseColor("#505B68"));
+            linearLayout.setPadding(DeviceHelper.dp2px(16), DeviceHelper.dp2px(150), 0, 0);
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -379,8 +380,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int[] items = baseConstant.getFloatMenuItem();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, DeviceHelper.dp2px(24));
-        params.bottomMargin = DeviceHelper.dp2px(8);
-        params.topMargin = DeviceHelper.dp2px(8);
+        params.bottomMargin = DeviceHelper.dp2px(6);
+        params.topMargin = DeviceHelper.dp2px(6);
         for (int i = 0; i < items.length; i++) {
             AppCompatImageView appCompatImageView = new AppCompatImageView(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -393,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     appCompatImageView.setImageResource(R.drawable.back_float);
                     break;
                 case ITEM_HOME:
-                    appCompatImageView.setImageResource(R.drawable.home_float);
+                    appCompatImageView.setImageResource(R.drawable.home);
                     break;
                 case ITEM_REFRESH:
                     appCompatImageView.setImageResource(R.drawable.refresh_float);
@@ -490,6 +491,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

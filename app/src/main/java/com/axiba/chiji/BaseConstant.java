@@ -31,6 +31,9 @@ public abstract class BaseConstant {
             else return ITEM_BACK;
         }
 
+        public int getValue() {
+            return i;
+        }
     }
 
     public static class SliderMenu {

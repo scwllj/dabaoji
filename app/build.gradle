@@ -10,6 +10,9 @@ android {
         versionName "1.0"
         flavorDimensions "dabao"
 
+        // 设置支持multidex
+        multiDexEnabled true
+
         manifestPlaceholders = [
                 SCREEN_ORIENTATION: "portrait",
                 MAIN_NAME         : applicationId,
@@ -589,12 +592,32 @@ android {
 //            ]
 //        }
 
-        baolitouzi {
-            applicationId = "com.apps.baolitouzi"
+//        baolitouzi {
+//            applicationId = "com.baolitouzi"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "ace8e6126780537529a379ea", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+//        guojiziben {
+//            applicationId = "com.guojiziben.app"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "ace8e6126780537529a379ea", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+
+        quanmingtoupiao {
+            applicationId = "com.quanmingtoupiao.app"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION: "sensor",
                     JPUSH_PKGNAME     : applicationId,
-                    JPUSH_APPKEY      : "ace8e6126780537529a379ea", //JPush上注册的包名对应的appkey.
+                    JPUSH_APPKEY      : "0b3d84ea7bf75cf326a70878", //JPush上注册的包名对应的appkey.
                     JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
             ]
         }
@@ -609,4 +632,6 @@ dependencies {
     implementation 'cn.jiguang.sdk:jcore:2.0.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation files('src/main/libs/tengxunx5v4.3.0.1020.jar')
+    implementation  'com.umeng.umsdk:analytics:8.1.0'
+    implementation  'com.umeng.umsdk:common:2.1.0'
 }

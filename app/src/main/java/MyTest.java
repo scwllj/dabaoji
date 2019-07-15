@@ -1,3 +1,5 @@
+import com.axiba.chiji.SecretUtil;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,47 +10,11 @@ import java.util.Random;
 
 public class MyTest {
     public static void main(String[] args) {
-
-        String[] fileNames = {"receiver/MyJpushReceiver.java", "CircleProgress.java",
-                "DeviceHelper.java", "FileUtils.java",
-                "Loading.java", "LogUtil.java",
-                "MainActivity.java", "MyWebview.java",
-                "PopView.java", "SharedApplication.java"};
-        for (int i = 0; i < fileNames.length; i++) {
-
-            File file = new File("/Users/linj/Documents/GitHub/dabaoji/app/src/main/java/com/axiba/chiji/" + fileNames[i]);
-            if (file.exists()) {
-                String encoding = "UTF-8";
-                Long filelength = file.length();
-                byte[] filecontent = new byte[filelength.intValue()];
-                try {
-                    FileInputStream in = new FileInputStream(file);
-                    in.read(filecontent);
-                    in.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    String content = new String(filecontent, encoding);
-                    int startIndex = content.indexOf("//sign--start");
-                    int endIndex = content.indexOf("//sign--end");
-                    String newContent = content.replace(content.substring(startIndex, endIndex),
-                            "//sign--start\n" + createCode(new Random().nextInt(1000) + 1500) + "\n    ");
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    fileOutputStream.write(newContent.getBytes());
-                    fileOutputStream.close();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
+        String aaa = "http://www.baidu.com";
+        String key ="2B2D63DE7D22A392799992BC51F01DF683628BDB";
+        String ecrypt =SecretUtil.decrypt(key,aaa);
+        String deCrypt =SecretUtil.decrypt(key,ecrypt);
+        System.out.printf(ecrypt+"_____"+deCrypt);
     }
 
     private static final Random random = new Random();

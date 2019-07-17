@@ -1,6 +1,7 @@
 package com.axiba.chiji;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,9 +38,11 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -73,6 +76,7 @@ import java.util.Set;
 import cn.jpush.android.api.JPushInterface;
 
 import static android.graphics.Color.WHITE;
+import static com.axiba.chiji.BaseConstant.FloatMenuItem.ITEM_HOME;
 import static com.axiba.chiji.BaseConstant.FloatMenuItem.getItem;
 import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_DEFAULT;
 import static com.tencent.smtt.export.external.interfaces.IX5WebSettings.LOAD_NO_CACHE;
@@ -179,6 +183,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (clearLayout != null) clearLayout.setOnClickListener(this);
         clearImg = findViewById(R.id.clear_img);
         if (clearImg != null) clearImg.setOnClickListener(this);
+
+        View showBottomMenu = findViewById(R.id.show_bottom_menu);
+        if (showBottomMenu != null) showBottomMenu.setOnClickListener(this);
 
         errorNotice = findViewById(R.id.errorNotice);
         if (errorNotice != null) errorNotice.setOnClickListener(this);
@@ -969,7 +976,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v == alertProgress) {
             alertProgress.setVisibility(View.INVISIBLE);
         }
+        switch (v.getId()){
+            case R.id.show_bottom_menu:
+                showBottomMenu();
+                break;
+            case R.id.bottom_home:
+                if(mCameraDialog != null){
+                    mCameraDialog.dismiss();
+                }
+                myWebview.loadUrl(baseConstant.getHomeUrl());
+                break;
+            case R.id.bottom_clear:
+                if(mCameraDialog != null){
+                    mCameraDialog.dismiss();
+                }
+                clearCache();
+                break;
+            case R.id.bottom_refresh:
+                if(mCameraDialog != null){
+                    mCameraDialog.dismiss();
+                }
+                myWebview.reload();
+                break;
+            case R.id.bottom_cancel:
+                if(mCameraDialog != null){
+                    mCameraDialog.dismiss();
+                }
+                break;
+        }
     }
+    Dialog mCameraDialog;
+
+    private void showBottomMenu() {
+        mCameraDialog = new Dialog(this, R.style.BottomDialog);
+        LinearLayout root = (LinearLayout) LayoutInflater.from(this).inflate(
+                R.layout.bottom_dialog, null);
+        //初始化视图
+        root.findViewById(R.id.bottom_home).setOnClickListener(this);
+        root.findViewById(R.id.bottom_clear).setOnClickListener(this);
+        root.findViewById(R.id.bottom_refresh).setOnClickListener(this);
+        root.findViewById(R.id.bottom_cancel).setOnClickListener(this);
+        mCameraDialog.setContentView(root);
+        Window dialogWindow = mCameraDialog.getWindow();
+        dialogWindow.setGravity(Gravity.BOTTOM);
+//        dialogWindow.setWindowAnimations(R.style.dialogstyle); // 添加动画
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
+        lp.x = 0; // 新位置X坐标
+        lp.y = 0; // 新位置Y坐标
+        lp.width = (int) getResources().getDisplayMetrics().widthPixels; // 宽度
+        root.measure(0, 0);
+        lp.height = root.getMeasuredHeight();
+
+//        lp.alpha = 9f; // 透明度
+        dialogWindow.setAttributes(lp);
+        mCameraDialog.show();
+    }
+
 
     void showPopMenu(View view) {
         PopView popView = new PopView(this, view);

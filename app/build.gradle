@@ -612,8 +612,17 @@ android {
 //            ]
 //        }
 
-        quanmingtoupiao {
-            applicationId = "com.quanmingtoupiao.app"
+//        quanmingtoupiao {
+//            applicationId = "com.quanmingtoupiao.app"
+//            manifestPlaceholders = [
+//                    SCREEN_ORIENTATION: "sensor",
+//                    JPUSH_PKGNAME     : applicationId,
+//                    JPUSH_APPKEY      : "0b3d84ea7bf75cf326a70878", //JPush上注册的包名对应的appkey.
+//                    JPUSH_CHANNEL     : "developer-default", //暂时填写默认值即可.
+//            ]
+//        }
+        huangguanguoji {
+            applicationId = "com.huangguanguoji.app"
             manifestPlaceholders = [
                     SCREEN_ORIENTATION: "sensor",
                     JPUSH_PKGNAME     : applicationId,

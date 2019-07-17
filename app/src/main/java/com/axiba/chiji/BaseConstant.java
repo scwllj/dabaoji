@@ -104,6 +104,10 @@ public abstract class BaseConstant {
         return null;
     }
 
+    protected int[] getBottomMenuItem() {
+        return null;
+    }
+
     protected boolean showGuideDirectly() {
         return false;
     }
